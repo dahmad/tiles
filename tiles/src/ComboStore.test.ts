@@ -54,3 +54,30 @@ it('returns the current combo count when there are no combo counts', () => {
     comboStore.incrementCurrentComboCounter();
     expect(comboStore.longestComboCount).toEqual(1);
 })
+
+it('starts with no tiles selected', () => {
+    const comboStore = new ComboStore([]);
+    expect(comboStore.selectedTileIndex).toBeUndefined();
+})
+
+it('can select a tile', () => {
+    const comboStore = new ComboStore([]);
+    expect(comboStore.selectedTileIndex).toBeUndefined();
+
+    comboStore.setSelectedTileIndex(1);
+    expect(comboStore.selectedTileIndex).toEqual(1);
+
+    comboStore.setSelectedTileIndex(2);
+    expect(comboStore.selectedTileIndex).toEqual(2);
+})
+
+it('can reset the selected tile', () => {
+    const comboStore = new ComboStore([]);
+    expect(comboStore.selectedTileIndex).toBeUndefined();
+
+    comboStore.setSelectedTileIndex(1);
+    expect(comboStore.selectedTileIndex).toEqual(1);
+
+    comboStore.resetSelectedTileIndex();
+    expect(comboStore.selectedTileIndex).toBeUndefined();
+})

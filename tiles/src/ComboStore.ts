@@ -5,6 +5,7 @@ export default class ComboStore {
     @observable currentComboCounter: number;
     @observable comboCounts: number[];
     @observable tiles: Tile[];
+    @observable selectedTileIndex: number | undefined;
 
     constructor(tiles: Tile[]) {
         makeAutoObservable(this);
@@ -20,6 +21,14 @@ export default class ComboStore {
     @action resetCurrentComboCounter = (): void => {
         this.comboCounts.push(this.currentComboCounter);
         this.currentComboCounter = 0;
+    }
+
+    @action resetSelectedTileIndex = (): void => {
+        this.selectedTileIndex = undefined;
+    }
+
+    @action setSelectedTileIndex = (index: number): void => {
+        this.selectedTileIndex = index;
     }
 
     @computed get longestComboCount(): number {
