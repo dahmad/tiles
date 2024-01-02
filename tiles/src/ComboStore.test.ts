@@ -2,20 +2,20 @@ import ComboStore from './ComboStore'
 
 
 it('starts with a empty combo counts', () => {
-    const comboStore = new ComboStore();
+    const comboStore = new ComboStore([]);
     expect(comboStore.currentComboCounter).toEqual(0);
     expect(comboStore.comboCounts).toEqual([]);
 })
 
 it('can increment currentComboCounter', () => {
-    const comboStore = new ComboStore();
+    const comboStore = new ComboStore([]);
     expect(comboStore.currentComboCounter).toEqual(0);
     comboStore.incrementCurrentComboCounter();
     expect(comboStore.currentComboCounter).toEqual(1);
 })
 
 it('can reset currentComboCounter', () => {
-    const comboStore = new ComboStore();
+    const comboStore = new ComboStore([]);
     comboStore.currentComboCounter = 100;
     expect(comboStore.currentComboCounter).toEqual(100);
     comboStore.resetCurrentComboCounter();
@@ -23,7 +23,7 @@ it('can reset currentComboCounter', () => {
 })
 
 it('adds to comboCounts when currentComboCounter is reset', () => {
-    const comboStore = new ComboStore();
+    const comboStore = new ComboStore([]);
 
     // Set one combo count
     comboStore.currentComboCounter = 100;
@@ -43,13 +43,13 @@ it('adds to comboCounts when currentComboCounter is reset', () => {
 })
 
 it('returns the longest combo count when there are combo counts', () => {
-    const comboStore = new ComboStore();
+    const comboStore = new ComboStore([]);
     comboStore.comboCounts = [1,2,3];
     expect(comboStore.longestComboCount).toEqual(3);
 })
 
 it('returns the current combo count when there are no combo counts', () => {
-    const comboStore = new ComboStore();
+    const comboStore = new ComboStore([]);
     expect(comboStore.longestComboCount).toEqual(0);
     comboStore.incrementCurrentComboCounter();
     expect(comboStore.longestComboCount).toEqual(1);
