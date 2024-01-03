@@ -57,6 +57,6 @@ export default class ComboStore {
             return this.currentComboCounter;
         }
 
-        return Math.max(...this.comboCounts);
+        return Math.max(...this.comboCounts, this.currentComboCounter);
     }
 }

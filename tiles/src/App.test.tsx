@@ -1,9 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
+import ComboStore from './ComboStore';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('renders', () => {
+  render(<App comboStore={new ComboStore([])}/>);
+  expect(screen.getByText(/current combo/i)).toBeInTheDocument();
+  expect(screen.getByText(/longest combo/i)).toBeInTheDocument();
 });

@@ -48,6 +48,13 @@ it('returns the longest combo count when there are combo counts', () => {
     expect(comboStore.longestComboCount).toEqual(3);
 })
 
+it('returns the longest combo count including the current count when there are combo counts', () => {
+    const comboStore = new ComboStore([]);
+    comboStore.currentComboCounter = 30;
+    comboStore.comboCounts = [1,2,3];
+    expect(comboStore.longestComboCount).toEqual(30);
+})
+
 it('returns the current combo count when there are no combo counts', () => {
     const comboStore = new ComboStore([]);
     expect(comboStore.longestComboCount).toEqual(0);
