@@ -1,0 +1,33 @@
+#comboCounts {
+  width: 50%;
+  margin: auto;
+}
+
+.flexbox-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.combo-row {
+  width: 50%;
+  flex: 1;
+}
+
+.combo-title {
+  font: bold 1em 'Fira Sans', sans-serif;
+}
+
+.combo-count {
+  font: bold 3em 'Fira Sans', sans-serif;
+  padding: 1%;
+}
+
+.align-left {
+  float: left;
+  text-align: left;
+}
+
+.align-right {
+  float: right;
+  text-align: right;
+}
