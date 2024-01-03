@@ -1,4 +1,4 @@
-import ComboStore from './ComboStore'
+import ComboStore from './ComboStore';
 
 const emptyTileSet = [[]]
 

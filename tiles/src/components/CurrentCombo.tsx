@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
-import './CurrentCombo.css';
 import { observer } from 'mobx-react-lite';
+import { FC } from 'react';
 import ComboStore from '../ComboStore';
+import './CurrentCombo.css';
 
 interface CurrentComboProps {
     comboStore: ComboStore;
