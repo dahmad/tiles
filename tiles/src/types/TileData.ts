@@ -1,3 +1,3 @@
-export type Tile = {
+export type TileData = {
     contents: number[];
 };

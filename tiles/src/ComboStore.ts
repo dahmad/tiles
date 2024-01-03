@@ -1,13 +1,13 @@
 import { action, computed, makeAutoObservable, observable } from "mobx";
-import { Tile } from "./types/Tile";
+import { TileData } from "./types/TileData";
 
 export default class ComboStore {
     @observable currentComboCounter: number;
     @observable comboCounts: number[];
-    @observable tiles: Tile[];
+    @observable tiles: TileData[];
     @observable selectedTileIndex: number | undefined;
 
-    constructor(tiles: Tile[]) {
+    constructor(tiles: TileData[]) {
         makeAutoObservable(this);
         this.currentComboCounter = 0;
         this.comboCounts = [];
