@@ -1,15 +1,12 @@
-import React, { FC } from 'react';
-import logo from './logo.svg';
+import React, { FC, useContext } from 'react';
 import './App.css';
 import { observer } from 'mobx-react-lite';
 import ComboCounts from './containers/ComboCounts';
-import ComboStore from './ComboStore';
+import { RootContext } from './RootContext';
 
-interface AppProps {
-  comboStore: ComboStore;
-}
+const App: FC = () => {
+  const { comboStore } = useContext(RootContext);
 
-const App: FC<AppProps> = ({ comboStore }) => {
   return (
     <div className="App">
       <header className="App-header" />
