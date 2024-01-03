@@ -1,18 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
+import { RootContextProvider } from './RootContext';
+import './index.css';
 import reportWebVitals from './reportWebVitals';
-import ComboStore from './ComboStore';
-
-const comboStore = new ComboStore([]);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App comboStore={comboStore} />
+    <RootContextProvider>
+      <App />
+    </RootContextProvider>
   </React.StrictMode>
 );
 

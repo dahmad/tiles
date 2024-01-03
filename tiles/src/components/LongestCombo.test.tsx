@@ -1,7 +1,6 @@
-import React from 'react';
 import { act, render, screen } from '@testing-library/react';
-import LongestCombo from './LongestCombo';
 import ComboStore from '../ComboStore';
+import LongestCombo from './LongestCombo';
 
 test('renders longest combo count', () => {
     const comboStore = new ComboStore([]);

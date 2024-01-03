@@ -1,18 +1,17 @@
-import React, { FC } from 'react';
-import logo from './logo.svg';
-import './App.css';
 import { observer } from 'mobx-react-lite';
+import { FC, useContext } from 'react';
+import './App.css';
+import { RootContext } from './RootContext';
 import ComboCounts from './containers/ComboCounts';
-import ComboStore from './ComboStore';
+import TileSet from './containers/TileSet';
 
-interface AppProps {
-  comboStore: ComboStore;
-}
+const App: FC = () => {
+  const { comboStore } = useContext(RootContext);
 
-const App: FC<AppProps> = ({ comboStore }) => {
   return (
     <div className="App">
       <header className="App-header" />
+      <TileSet />
       <ComboCounts comboStore={comboStore} />
     </div>
   );

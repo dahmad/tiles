@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
-import './LongestCombo.css';
 import { observer } from 'mobx-react-lite';
+import { FC } from 'react';
 import ComboStore from '../ComboStore';
+import './LongestCombo.css';
 
 interface LongestComboProps {
     comboStore: ComboStore;

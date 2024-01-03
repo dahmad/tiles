@@ -1,7 +1,6 @@
-import React from 'react';
 import { act, render, screen } from '@testing-library/react';
-import CurrentCombo from './CurrentCombo';
 import ComboStore from '../ComboStore';
+import CurrentCombo from './CurrentCombo';
 
 test('renders current combo count', () => {
     const comboStore = new ComboStore([]);
