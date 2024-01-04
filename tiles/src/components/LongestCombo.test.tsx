@@ -1,10 +1,12 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import ComboStore from '../ComboStore';
+import { renderWithMockProvider } from '../testHelpers';
 import LongestCombo from './LongestCombo';
 
 test('renders longest combo count', () => {
-    const comboStore = new ComboStore([]);
-    render(<LongestCombo comboStore={comboStore}/>);
+    const comboStore = new ComboStore([[]]);
+
+    renderWithMockProvider(<LongestCombo />, { comboStore });
     
     // Longest combo count follows current count at start
     expect(screen.getByText(/longest combo: 0/i)).toBeInTheDocument();

@@ -1,19 +1,15 @@
 import { observer } from 'mobx-react-lite';
-import { FC } from 'react';
-import ComboStore from '../ComboStore';
+import { FC, useContext } from 'react';
+import { RootContext } from '../RootContext';
 import CurrentCombo from '../components/CurrentCombo';
 import LongestCombo from '../components/LongestCombo';
 import './ComboCounts.css';
-
-interface ComboCountsProps {
-    comboStore: ComboStore;
-}
   
-const ComboCounts: FC<ComboCountsProps> = ({ comboStore }) => {
+const ComboCounts: FC = () => {
   return (
     <div id="comboCounts">
-      <CurrentCombo comboStore={comboStore} />
-      <LongestCombo comboStore={comboStore} />
+      <CurrentCombo />
+      <LongestCombo />
     </div>
   );
 }

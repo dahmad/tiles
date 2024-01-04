@@ -1,10 +1,12 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import ComboStore from '../ComboStore';
+import { renderWithMockProvider } from '../testHelpers';
 import ComboCounts from './ComboCounts';
 
 test('renders combo counts', () => {
-    const comboStore = new ComboStore([]);
-    render(<ComboCounts comboStore={comboStore}/>);
+    const comboStore = new ComboStore([[]]);
+
+    renderWithMockProvider(<ComboCounts />, { comboStore });
     
     expect(screen.getByText(/current combo: 0/i)).toBeInTheDocument();
     expect(screen.getByText(/longest combo: 0/i)).toBeInTheDocument();
