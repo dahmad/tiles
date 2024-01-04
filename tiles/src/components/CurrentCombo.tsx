@@ -1,13 +1,11 @@
 import { observer } from 'mobx-react-lite';
-import { FC } from 'react';
-import ComboStore from '../ComboStore';
+import { FC, useContext } from 'react';
+import { RootContext } from '../RootContext';
 import './CurrentCombo.css';
-
-interface CurrentComboProps {
-    comboStore: ComboStore;
-}
   
-const CurrentCombo: FC<CurrentComboProps> = ({ comboStore }) => {
+const CurrentCombo: FC = () => {
+  const { comboStore } = useContext(RootContext);
+
   return (
     <div id="currentCombo">
       Current Combo: {comboStore.currentComboCounter}
