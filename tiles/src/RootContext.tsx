@@ -16,12 +16,12 @@ interface RootContextProviderProps {
 // This is temporary
 const mockTileSet = [
   [
-    { contents: [1,2,3] },
-    { contents: [1,3,5] },
+    [],
+    [],
   ],
   [
-    { contents: [6,7,9] },
-    { contents: [0,2,9] },
+    [],
+    [],
   ],
 ] as TileSetData;
 

@@ -1,62 +1,112 @@
-import { action, computed, makeAutoObservable, observable } from "mobx";
-import { TileSetData } from "./types/TileSetData";
+import { action, computed, makeAutoObservable, observable } from 'mobx';
+import { TileSetData } from './types/TileSetData';
+import { ComponentData } from './types/ComponentData';
 
 export default class ComboStore {
-    @observable currentComboCounter: number;
-    @observable comboCounts: number[];
-    @observable tileSet: TileSetData;
-    @observable selectedTileIndex: [number, number] | undefined;
+  @observable currentComboCounter: number;
+  @observable comboCounts: number[];
+  @observable tileSet: TileSetData;
+  @observable selectedTileIndex: [number, number] | undefined;
 
-    constructor(tileSet: TileSetData) {
-        makeAutoObservable(this);
-        this.currentComboCounter = 0;
-        this.comboCounts = [];
-        this.tileSet = tileSet;
+  constructor(tileSet: TileSetData) {
+    makeAutoObservable(this);
+    this.currentComboCounter = 0;
+    this.comboCounts = [];
+    this.tileSet = tileSet;
+  }
+
+  @action incrementCurrentComboCounter = (): void => {
+    this.currentComboCounter += 1;
+  };
+
+  @action matchTiles = (rowIndex: number, columnIndex: number): void => {
+    if (this.selectedTileIndex !== undefined) {
+      const [selectedRowIndex, selectedColumnIndex] = this.selectedTileIndex;
+
+      const intersectingComponents = this.getIntersectingComponents(
+        selectedRowIndex,
+        selectedColumnIndex,
+        rowIndex,
+        columnIndex
+      );
+
+      if (intersectingComponents.length > 0) {
+        this.incrementCurrentComboCounter();
+
+        this.filterIntersectingComponents(
+          selectedRowIndex,
+          selectedColumnIndex,
+          intersectingComponents
+        );
+        this.filterIntersectingComponents(
+          rowIndex,
+          columnIndex,
+          intersectingComponents
+        );
+
+        this.resetSelectedTileIndex();
+      } else {
+        this.resetCurrentComboCounter();
+        this.resetSelectedTileIndex();
+      }
+    }
+  };
+
+  @action resetCurrentComboCounter = (): void => {
+    this.comboCounts.push(this.currentComboCounter);
+    this.currentComboCounter = 0;
+  };
+
+  @action resetSelectedTileIndex = (): void => {
+    this.selectedTileIndex = undefined;
+  };
+
+  @action setSelectedTileIndex = (
+    rowIndex: number,
+    columnIndex: number
+  ): void => {
+    this.selectedTileIndex = [rowIndex, columnIndex];
+  };
+
+  @computed get longestComboCount(): number {
+    if (this.comboCounts.length === 0) {
+      return this.currentComboCounter;
     }
 
-    @action incrementCurrentComboCounter = (): void => {
-        this.currentComboCounter += 1;
-    }
+    return Math.max(...this.comboCounts, this.currentComboCounter);
+  }
 
-    @action matchTiles = (rowIndex: number, columnIndex: number): void => {
-        if (this.selectedTileIndex !== undefined) {
-            const firstTile = this.tileSet[this.selectedTileIndex[0]][this.selectedTileIndex[1]];
-            const secondTile = this.tileSet[rowIndex][columnIndex];
+  filterIntersectingComponents = (
+    rowIndex: number,
+    columnIndex: number,
+    intersectingComponents: string[]
+  ): void => {
+    this.tileSet[rowIndex][columnIndex] = this.tileSet[rowIndex][
+      columnIndex
+    ].filter(
+      (component: ComponentData) =>
+        !intersectingComponents.includes(component.id)
+    );
+  };
 
-            const contentsIntersection = firstTile.contents.filter(value => secondTile.contents.includes(value));
+  getIntersectingComponents = (
+    firstRowIndex: number,
+    firstColumnIndex: number,
+    secondRowIndex: number,
+    secondColumnIndex: number
+  ): string[] => {
+    let firstTile = this.tileSet[firstRowIndex][firstColumnIndex];
+    const firstTileComponentIds = firstTile.map(
+      (component: ComponentData) => component.id
+    );
 
-            if (contentsIntersection.length > 0) {
-                this.incrementCurrentComboCounter();
+    let secondTile = this.tileSet[secondRowIndex][secondColumnIndex];
+    const secondTileComponentIds = secondTile.map(
+      (component: ComponentData) => component.id
+    );
 
-                firstTile.contents = firstTile.contents.filter(value => !contentsIntersection.includes(value))
-                secondTile.contents = secondTile.contents.filter(value => !contentsIntersection.includes(value))
-
-                this.resetSelectedTileIndex();
-            } else {
-                this.resetCurrentComboCounter();
-                this.resetSelectedTileIndex();
-            }
-        }
-    }
-
-    @action resetCurrentComboCounter = (): void => {
-        this.comboCounts.push(this.currentComboCounter);
-        this.currentComboCounter = 0;
-    }
-
-    @action resetSelectedTileIndex = (): void => {
-        this.selectedTileIndex = undefined;
-    }
-
-    @action setSelectedTileIndex = (rowIndex: number, columnIndex: number): void => {
-        this.selectedTileIndex = [rowIndex, columnIndex];
-    }
-
-    @computed get longestComboCount(): number {
-        if (this.comboCounts.length === 0) {
-            return this.currentComboCounter;
-        }
-
-        return Math.max(...this.comboCounts, this.currentComboCounter);
-    }
+    return firstTileComponentIds.filter((id: string) =>
+      secondTileComponentIds.includes(id)
+    );
+  };
 }
