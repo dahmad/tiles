@@ -1,7 +1,7 @@
 import ComboStore from './ComboStore';
 import { mockTileSetData } from './testHelpers';
 
-const emptyTileSet = [[]];
+const emptyTileSet = [[[], []]];
 
 it('starts with a empty combo counts', () => {
   const comboStore = new ComboStore(emptyTileSet);
@@ -70,18 +70,45 @@ it('starts with no tiles selected', () => {
 });
 
 it('can select a tile', () => {
-  const comboStore = new ComboStore(emptyTileSet);
+  const mockTileSet = mockTileSetData([
+    [
+      ['a', 'b'],
+      ['b', 'c'],
+    ],
+  ]);
+
+  const comboStore = new ComboStore(mockTileSet);
   expect(comboStore.selectedTileIndex).toBeUndefined();
 
   comboStore.setSelectedTileIndex(0, 1);
   expect(comboStore.selectedTileIndex).toEqual([0, 1]);
+});
 
-  comboStore.setSelectedTileIndex(2, 3);
-  expect(comboStore.selectedTileIndex).toEqual([2, 3]);
+it('is a no-op if selected tile is empty', () => {
+  const mockTileSet = mockTileSetData([[['a', 'b'], []]]);
+
+  const comboStore = new ComboStore(mockTileSet);
+
+  // Remains undefined
+  expect(comboStore.selectedTileIndex).toBeUndefined();
+  comboStore.setSelectedTileIndex(0, 1);
+  expect(comboStore.selectedTileIndex).toBeUndefined();
+
+  // Retains previously-selected tile
+  comboStore.setSelectedTileIndex(0, 0);
+  comboStore.setSelectedTileIndex(0, 1);
+  expect(comboStore.selectedTileIndex).toEqual([0, 0]);
 });
 
 it('can reset the selected tile', () => {
-  const comboStore = new ComboStore(emptyTileSet);
+  const mockTileSet = mockTileSetData([
+    [
+      ['a', 'b'],
+      ['b', 'c'],
+    ],
+  ]);
+
+  const comboStore = new ComboStore(mockTileSet);
   expect(comboStore.selectedTileIndex).toBeUndefined();
 
   comboStore.setSelectedTileIndex(0, 1);
