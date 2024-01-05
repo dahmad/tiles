@@ -44,7 +44,11 @@ export default class ComboStore {
           intersectingComponents
         );
 
-        this.resetSelectedTileIndex();
+        if (this.tileSet[rowIndex][columnIndex].length === 0) {
+          this.resetSelectedTileIndex();
+        } else {
+          this.setSelectedTileIndex(rowIndex, columnIndex);
+        }
       } else {
         this.resetCurrentComboCounter();
         this.resetSelectedTileIndex();
