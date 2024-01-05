@@ -65,7 +65,11 @@ export default class ComboStore {
     rowIndex: number,
     columnIndex: number
   ): void => {
-    this.selectedTileIndex = [rowIndex, columnIndex];
+    if (this.tileSet[rowIndex][columnIndex].length === 0) {
+      // no-op
+    } else {
+      this.selectedTileIndex = [rowIndex, columnIndex];
+    }
   };
 
   @computed get longestComboCount(): number {
