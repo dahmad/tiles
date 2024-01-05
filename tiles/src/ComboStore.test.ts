@@ -131,6 +131,30 @@ it('increments current combo count if tiles match', () => {
   comboStore.matchTiles(0, 1);
 
   expect(comboStore.currentComboCounter).toEqual(1);
+});
+
+it('selected second tile if tiles match and second tile is not empty', () => {
+  const mockTileSet = mockTileSetData([
+    [
+      ['a', 'b'],
+      ['b', 'c'],
+    ],
+  ]);
+
+  const comboStore = new ComboStore(mockTileSet);
+  comboStore.setSelectedTileIndex(0, 0);
+  comboStore.matchTiles(0, 1);
+
+  expect(comboStore.selectedTileIndex).toEqual([0, 1]);
+});
+
+it('resets selected tile if tiles match and second tile is empty', () => {
+  const mockTileSet = mockTileSetData([[['a', 'b'], ['b']]]);
+
+  const comboStore = new ComboStore(mockTileSet);
+  comboStore.setSelectedTileIndex(0, 0);
+  comboStore.matchTiles(0, 1);
+
   expect(comboStore.selectedTileIndex).toBeUndefined();
 });
 
