@@ -1,17 +1,16 @@
 import { render, screen } from '@testing-library/react';
 import { RootContextProvider } from '../RootContext';
+import { mockTileSetData } from '../testHelpers';
 import Tile from './Tile';
 
 test('renders', () => {
-    const mockTile = { contents: [1, 2] };
-    const mockTileSet = [[mockTile]];
+  const mockTileSet = mockTileSetData([[['a', 'b']]]);
 
-    render(
-        <RootContextProvider tileSetData={mockTileSet}>
-            <Tile rowIndex={0} columnIndex={0} />
-        </RootContextProvider>
-    );
-    
-    expect(screen.getByText(/1/i)).toBeInTheDocument();
-    expect(screen.getByText(/2/i)).toBeInTheDocument();
+  render(
+    <RootContextProvider tileSetData={mockTileSet}>
+      <Tile rowIndex={0} columnIndex={0} />
+    </RootContextProvider>
+  );
+
+  expect(screen.getAllByRole('button').length).toEqual(1);
 });
