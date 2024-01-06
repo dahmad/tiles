@@ -25,6 +25,21 @@ const shouldSetSelectedTileIndex = (
   }
 };
 
+const isSelected = (
+  comboStore: ComboStore,
+  rowIndex: number,
+  columnIndex: number
+): boolean => {
+  if (comboStore.selectedTileIndex === undefined) {
+    return false;
+  } else {
+    return (
+      comboStore.selectedTileIndex[0] === rowIndex &&
+      comboStore.selectedTileIndex[1] === columnIndex
+    );
+  }
+};
+
 const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
   const { comboStore } = useContext(RootContext);
   const tile = comboStore.tileSet[rowIndex][columnIndex];
@@ -40,6 +55,9 @@ const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
           comboStore.matchTiles(rowIndex, columnIndex);
         }
       }}
+      className={
+        isSelected(comboStore, rowIndex, columnIndex) ? 'selected' : ''
+      }
     >
       {tile.map((component: ComponentData, i: number) => {
         return (
