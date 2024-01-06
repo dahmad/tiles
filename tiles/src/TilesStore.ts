@@ -2,7 +2,7 @@ import { action, computed, makeAutoObservable, observable } from 'mobx';
 import { TileSetData } from './types/TileSetData';
 import { ComponentData } from './types/ComponentData';
 
-export default class ComboStore {
+export default class TilesStore {
   @observable currentComboCounter: number;
   @observable comboCounts: number[];
   @observable tileSet: TileSetData;

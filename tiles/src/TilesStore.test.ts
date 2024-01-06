@@ -1,0 +1,250 @@
+import TilesStore from './TilesStore';
+import { mockTileSetData } from './testHelpers';
+
+const emptyTileSet = [[[], []]];
+
+it('starts with a empty combo counts', () => {
+  const tilesStore = new TilesStore(emptyTileSet);
+  expect(tilesStore.currentComboCounter).toEqual(0);
+  expect(tilesStore.comboCounts).toEqual([]);
+});
+
+it('can increment currentComboCounter', () => {
+  const tilesStore = new TilesStore(emptyTileSet);
+  expect(tilesStore.currentComboCounter).toEqual(0);
+  tilesStore.incrementCurrentComboCounter();
+  expect(tilesStore.currentComboCounter).toEqual(1);
+});
+
+it('can reset currentComboCounter', () => {
+  const tilesStore = new TilesStore(emptyTileSet);
+  tilesStore.currentComboCounter = 100;
+  expect(tilesStore.currentComboCounter).toEqual(100);
+  tilesStore.resetCurrentComboCounter();
+  expect(tilesStore.currentComboCounter).toEqual(0);
+});
+
+it('adds to comboCounts when currentComboCounter is reset', () => {
+  const tilesStore = new TilesStore(emptyTileSet);
+
+  // Set one combo count
+  tilesStore.currentComboCounter = 100;
+  expect(tilesStore.currentComboCounter).toEqual(100);
+
+  tilesStore.resetCurrentComboCounter();
+
+  expect(tilesStore.comboCounts).toEqual([100]);
+
+  // Set another combo count
+  tilesStore.currentComboCounter = 33;
+  expect(tilesStore.currentComboCounter).toEqual(33);
+
+  tilesStore.resetCurrentComboCounter();
+
+  expect(tilesStore.comboCounts).toEqual([100, 33]);
+});
+
+it('returns the longest combo count when there are combo counts', () => {
+  const tilesStore = new TilesStore(emptyTileSet);
+  tilesStore.comboCounts = [1, 2, 3];
+  expect(tilesStore.longestComboCount).toEqual(3);
+});
+
+it('returns the longest combo count including the current count when there are combo counts', () => {
+  const tilesStore = new TilesStore(emptyTileSet);
+  tilesStore.currentComboCounter = 30;
+  tilesStore.comboCounts = [1, 2, 3];
+  expect(tilesStore.longestComboCount).toEqual(30);
+});
+
+it('returns the current combo count when there are no combo counts', () => {
+  const tilesStore = new TilesStore(emptyTileSet);
+  expect(tilesStore.longestComboCount).toEqual(0);
+  tilesStore.incrementCurrentComboCounter();
+  expect(tilesStore.longestComboCount).toEqual(1);
+});
+
+it('starts with no tiles selected', () => {
+  const tilesStore = new TilesStore(emptyTileSet);
+  expect(tilesStore.selectedTileIndex).toBeUndefined();
+});
+
+it('can select a tile', () => {
+  const mockTileSet = mockTileSetData([
+    [
+      ['a', 'b'],
+      ['b', 'c'],
+    ],
+  ]);
+
+  const tilesStore = new TilesStore(mockTileSet);
+  expect(tilesStore.selectedTileIndex).toBeUndefined();
+
+  tilesStore.setSelectedTileIndex(0, 1);
+  expect(tilesStore.selectedTileIndex).toEqual([0, 1]);
+});
+
+it('is a no-op if selected tile is empty', () => {
+  const mockTileSet = mockTileSetData([[['a', 'b'], []]]);
+
+  const tilesStore = new TilesStore(mockTileSet);
+
+  // Remains undefined
+  expect(tilesStore.selectedTileIndex).toBeUndefined();
+  tilesStore.setSelectedTileIndex(0, 1);
+  expect(tilesStore.selectedTileIndex).toBeUndefined();
+
+  // Retains previously-selected tile
+  tilesStore.setSelectedTileIndex(0, 0);
+  tilesStore.setSelectedTileIndex(0, 1);
+  expect(tilesStore.selectedTileIndex).toEqual([0, 0]);
+});
+
+it('can reset the selected tile', () => {
+  const mockTileSet = mockTileSetData([
+    [
+      ['a', 'b'],
+      ['b', 'c'],
+    ],
+  ]);
+
+  const tilesStore = new TilesStore(mockTileSet);
+  expect(tilesStore.selectedTileIndex).toBeUndefined();
+
+  tilesStore.setSelectedTileIndex(0, 1);
+  expect(tilesStore.selectedTileIndex).toEqual([0, 1]);
+
+  tilesStore.resetSelectedTileIndex();
+  expect(tilesStore.selectedTileIndex).toBeUndefined();
+});
+
+it('increments current combo count if tiles match', () => {
+  const mockTileSet = mockTileSetData([
+    [
+      ['a', 'b'],
+      ['b', 'c'],
+    ],
+  ]);
+
+  const tilesStore = new TilesStore(mockTileSet);
+  tilesStore.setSelectedTileIndex(0, 0);
+  tilesStore.matchTiles(0, 1);
+
+  expect(tilesStore.currentComboCounter).toEqual(1);
+});
+
+it('selected second tile if tiles match and second tile is not empty', () => {
+  const mockTileSet = mockTileSetData([
+    [
+      ['a', 'b'],
+      ['b', 'c'],
+    ],
+  ]);
+
+  const tilesStore = new TilesStore(mockTileSet);
+  tilesStore.setSelectedTileIndex(0, 0);
+  tilesStore.matchTiles(0, 1);
+
+  expect(tilesStore.selectedTileIndex).toEqual([0, 1]);
+});
+
+it('resets selected tile if tiles match and second tile is empty', () => {
+  const mockTileSet = mockTileSetData([[['a', 'b'], ['b']]]);
+
+  const tilesStore = new TilesStore(mockTileSet);
+  tilesStore.setSelectedTileIndex(0, 0);
+  tilesStore.matchTiles(0, 1);
+
+  expect(tilesStore.selectedTileIndex).toBeUndefined();
+});
+
+it("resets current combo count if tiles don't match", () => {
+  const mockTileSet = mockTileSetData([
+    [
+      ['a', 'b'],
+      ['c', 'd'],
+    ],
+  ]);
+
+  const tilesStore = new TilesStore(mockTileSet);
+  tilesStore.currentComboCounter = 100;
+  tilesStore.setSelectedTileIndex(0, 0);
+  tilesStore.matchTiles(0, 1);
+
+  expect(tilesStore.currentComboCounter).toEqual(0);
+  expect(tilesStore.selectedTileIndex).toBeUndefined();
+});
+
+it('modifies tiles if tiles match -- single match', () => {
+  const mockTileSet = mockTileSetData([
+    [
+      ['a', 'b'],
+      ['b', 'c'],
+    ],
+  ]);
+
+  const tilesStore = new TilesStore(mockTileSet);
+  tilesStore.setSelectedTileIndex(0, 0);
+  tilesStore.matchTiles(0, 1);
+
+  expect(tilesStore.tileSet).toEqual(mockTileSetData([[['a'], ['c']]]));
+});
+
+it('modifies tiles if tiles match -- many matches', () => {
+  const mockTileSet = mockTileSetData([
+    [
+      ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
+      ['c', 'd', 'e', 'f', 'g', 'h', 'i'],
+    ],
+  ]);
+  const tilesStore = new TilesStore(mockTileSet);
+  tilesStore.setSelectedTileIndex(0, 0);
+  tilesStore.matchTiles(0, 1);
+
+  expect(tilesStore.tileSet).toEqual(
+    mockTileSetData([
+      [
+        ['a', 'b'],
+        ['h', 'i'],
+      ],
+    ])
+  );
+});
+
+it('modifies tiles if tiles match -- final match', () => {
+  const mockTileSet = mockTileSetData([[['a'], ['a']]]);
+
+  const tilesStore = new TilesStore(mockTileSet);
+  tilesStore.setSelectedTileIndex(0, 0);
+  tilesStore.matchTiles(0, 1);
+
+  expect(tilesStore.tileSet).toEqual(mockTileSetData([[[], []]]));
+});
+
+it("does not modify tiles if tiles don't match", () => {
+  const mockTileSet = mockTileSetData([
+    [
+      ['a', 'b'],
+      ['c', 'd'],
+    ],
+  ]);
+
+  const tilesStore = new TilesStore(mockTileSet);
+  tilesStore.currentComboCounter = 100;
+  tilesStore.setSelectedTileIndex(0, 0);
+  tilesStore.matchTiles(0, 1);
+
+  expect(tilesStore.tileSet).toEqual(mockTileSet);
+});
+
+describe('isSelected', () => {
+  it('returns true if tile is selected and false if not', () => {
+    const mockTileSet = mockTileSetData([[['a'], ['a']]]);
+
+    const tilesStore = new TilesStore(mockTileSet);
+    tilesStore.setSelectedTileIndex(0, 1);
+
+    expect(tilesStore.isSelected(0, 1)).toBeTruthy();
+    expect(tilesStore.isSelected(0, 0)).toBeFalsy();
+  });
+});

@@ -1,10 +1,10 @@
 import { ReactNode, createContext, useMemo, useState } from 'react';
-import ComboStore from './ComboStore';
+import TilesStore from './TilesStore';
 import testTileSet from './assets/tileSets/testTileSet.json';
 import { TileSetData } from './types/TileSetData';
 
 export interface RootContextType {
-  comboStore: ComboStore;
+  tilesStore: TilesStore;
 }
 
 export const RootContext = createContext(null as unknown as RootContextType);
@@ -19,10 +19,10 @@ export function RootContextProvider({
   children,
 }: RootContextProviderProps) {
   const tiles = tileSetData === undefined ? testTileSet : tileSetData;
-  const [comboStore] = useState(() => new ComboStore(tiles));
+  const [tilesStore] = useState(() => new TilesStore(tiles));
   const providerValue = useMemo(() => {
-    return { comboStore };
-  }, [comboStore]);
+    return { tilesStore };
+  }, [tilesStore]);
 
   return (
     <RootContext.Provider value={providerValue}>

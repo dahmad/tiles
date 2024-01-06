@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import { FC, useContext } from 'react';
-import ComboStore from '../ComboStore';
+import TilesStore from '../TilesStore';
 import { RootContext } from '../RootContext';
 import { ComponentData } from '../types/ComponentData';
 import './Tile.css';
@@ -11,16 +11,16 @@ interface TileProps {
 }
 
 const shouldSetSelectedTileIndex = (
-  comboStore: ComboStore,
+  tilesStore: TilesStore,
   rowIndex: number,
   columnIndex: number
 ): boolean => {
-  if (comboStore.selectedTileIndex === undefined) {
+  if (tilesStore.selectedTileIndex === undefined) {
     return true;
   } else {
     return (
-      comboStore.selectedTileIndex[0] === rowIndex &&
-      comboStore.selectedTileIndex[1] === columnIndex
+      tilesStore.selectedTileIndex[0] === rowIndex &&
+      tilesStore.selectedTileIndex[1] === columnIndex
     );
   }
 };
@@ -38,22 +38,22 @@ const backgroundColor = (rowIndex: number, columnIndex: number): string => {
 };
 
 const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
-  const { comboStore } = useContext(RootContext);
-  const tile = comboStore.tileSet[rowIndex][columnIndex];
+  const { tilesStore } = useContext(RootContext);
+  const tile = tilesStore.tileSet[rowIndex][columnIndex];
 
   return (
     <div
       role="button"
       id={`tile_${rowIndex}_${columnIndex}`}
       onClick={() => {
-        if (shouldSetSelectedTileIndex(comboStore, rowIndex, columnIndex)) {
-          comboStore.setSelectedTileIndex(rowIndex, columnIndex);
+        if (shouldSetSelectedTileIndex(tilesStore, rowIndex, columnIndex)) {
+          tilesStore.setSelectedTileIndex(rowIndex, columnIndex);
         } else {
-          comboStore.matchTiles(rowIndex, columnIndex);
+          tilesStore.matchTiles(rowIndex, columnIndex);
         }
       }}
       className={
-        comboStore.isSelected(rowIndex, columnIndex) ? 'selected' : ''
+        tilesStore.isSelected(rowIndex, columnIndex) ? 'selected' : ''
       }
       style={{
         backgroundColor: backgroundColor(rowIndex, columnIndex),

@@ -1,19 +1,19 @@
 import { act, screen } from '@testing-library/react';
-import ComboStore from '../ComboStore';
+import TilesStore from '../TilesStore';
 import { renderWithMockProvider } from '../testHelpers';
 import ComboCounts from './ComboCounts';
 
 test('renders combo counts', () => {
-  const comboStore = new ComboStore([[]]);
+  const tilesStore = new TilesStore([[]]);
 
-  renderWithMockProvider(<ComboCounts />, { comboStore });
+  renderWithMockProvider(<ComboCounts />, { tilesStore });
 
   expect(screen.getByText(/current combo/i)).toBeInTheDocument();
   expect(screen.getByText(/longest combo/i)).toBeInTheDocument();
   expect(screen.getAllByText(/0/i).length).toEqual(2);
 
   act(() => {
-    comboStore.incrementCurrentComboCounter();
+    tilesStore.incrementCurrentComboCounter();
   });
 
   expect(screen.getByText(/current combo/i)).toBeInTheDocument();
@@ -21,7 +21,7 @@ test('renders combo counts', () => {
   expect(screen.getAllByText(/1/i).length).toEqual(2);
 
   act(() => {
-    comboStore.resetCurrentComboCounter();
+    tilesStore.resetCurrentComboCounter();
   });
 
   expect(screen.getByText(/current combo/i)).toBeInTheDocument();
@@ -30,7 +30,7 @@ test('renders combo counts', () => {
   expect(screen.getAllByText(/1/i).length).toEqual(1);
 
   act(() => {
-    comboStore.incrementCurrentComboCounter();
+    tilesStore.incrementCurrentComboCounter();
   });
 
   expect(screen.getByText(/current combo/i)).toBeInTheDocument();
@@ -38,7 +38,7 @@ test('renders combo counts', () => {
   expect(screen.getAllByText(/1/i).length).toEqual(2);
 
   act(() => {
-    comboStore.incrementCurrentComboCounter();
+    tilesStore.incrementCurrentComboCounter();
   });
 
   expect(screen.getByText(/current combo/i)).toBeInTheDocument();

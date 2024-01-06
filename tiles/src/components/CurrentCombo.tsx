@@ -4,12 +4,12 @@ import { RootContext } from '../RootContext';
 import './CurrentCombo.css';
 
 const CurrentCombo: FC = () => {
-  const { comboStore } = useContext(RootContext);
+  const { tilesStore } = useContext(RootContext);
 
   return (
     <div className="combo-row align-left">
       <div className="combo-title">Current Combo</div>
-      <div className="combo-count">{comboStore.currentComboCounter}</div>
+      <div className="combo-count">{tilesStore.currentComboCounter}</div>
     </div>
   );
 };

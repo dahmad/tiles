@@ -1,19 +1,19 @@
 import { act, screen } from '@testing-library/react';
-import ComboStore from '../ComboStore';
+import TilesStore from '../TilesStore';
 import { renderWithMockProvider } from '../testHelpers';
 import CurrentCombo from './CurrentCombo';
 
 test('renders current combo count', () => {
-  const comboStore = new ComboStore([[]]);
+  const tilesStore = new TilesStore([[]]);
 
-  renderWithMockProvider(<CurrentCombo />, { comboStore });
+  renderWithMockProvider(<CurrentCombo />, { tilesStore });
 
   expect(screen.getByText(/current combo/i)).toBeInTheDocument();
   expect(screen.getByText(/0/i)).toBeInTheDocument();
 
   act(() => {
-    comboStore.incrementCurrentComboCounter();
-    comboStore.incrementCurrentComboCounter();
+    tilesStore.incrementCurrentComboCounter();
+    tilesStore.incrementCurrentComboCounter();
   });
 
   expect(screen.getByText(/current combo/i)).toBeInTheDocument();
