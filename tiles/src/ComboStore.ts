@@ -117,4 +117,15 @@ export default class ComboStore {
       secondTileComponentIds.includes(id)
     );
   };
+
+  isSelected(rowIndex: number, columnIndex: number): boolean {
+    if (this.selectedTileIndex === undefined) {
+      return false;
+    } else {
+      return (
+        this.selectedTileIndex[0] === rowIndex &&
+        this.selectedTileIndex[1] === columnIndex
+      );
+    }
+  }
 }

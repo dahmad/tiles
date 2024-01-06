@@ -25,21 +25,6 @@ const shouldSetSelectedTileIndex = (
   }
 };
 
-const isSelected = (
-  comboStore: ComboStore,
-  rowIndex: number,
-  columnIndex: number
-): boolean => {
-  if (comboStore.selectedTileIndex === undefined) {
-    return false;
-  } else {
-    return (
-      comboStore.selectedTileIndex[0] === rowIndex &&
-      comboStore.selectedTileIndex[1] === columnIndex
-    );
-  }
-};
-
 const backgroundColor = (rowIndex: number, columnIndex: number): string => {
   if (rowIndex % 2 === 0 && columnIndex % 2 === 0) {
     return 'white';
@@ -68,7 +53,7 @@ const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
         }
       }}
       className={
-        isSelected(comboStore, rowIndex, columnIndex) ? 'selected' : ''
+        comboStore.isSelected(rowIndex, columnIndex) ? 'selected' : ''
       }
       style={{
         backgroundColor: backgroundColor(rowIndex, columnIndex),

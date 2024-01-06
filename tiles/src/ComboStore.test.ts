@@ -236,3 +236,15 @@ it("does not modify tiles if tiles don't match", () => {
 
   expect(comboStore.tileSet).toEqual(mockTileSet);
 });
+
+describe('isSelected', () => {
+  it('returns true if tile is selected and false if not', () => {
+    const mockTileSet = mockTileSetData([[['a'], ['a']]]);
+
+    const comboStore = new ComboStore(mockTileSet);
+    comboStore.setSelectedTileIndex(0, 1);
+
+    expect(comboStore.isSelected(0, 1)).toBeTruthy();
+    expect(comboStore.isSelected(0, 0)).toBeFalsy();
+  });
+});
