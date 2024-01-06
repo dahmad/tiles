@@ -1,8 +1,9 @@
 import { observer } from 'mobx-react-lite';
-import { FC, useContext } from 'react';
+import React, { FC, useContext } from 'react';
 import { RootContext } from '../RootContext';
 import { ComponentData } from '../types/ComponentData';
 import './Tile.css';
+import TileLayer from './TileLayer';
 
 interface TileProps {
   rowIndex: number;
@@ -23,12 +24,7 @@ const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
     >
       {tile.map((component: ComponentData, i: number) => {
         return (
-          <img
-            key={`component_${i}`}
-            src={`data:image/svg+xml;utf8,${encodeURIComponent(component.svg)}`}
-            alt={component.id}
-            style={{ zIndex: i + 1 }}
-          />
+          <TileLayer key={`component_${i}`} component={component} zIndex={i} />
         );
       })}
     </div>
