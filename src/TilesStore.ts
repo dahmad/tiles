@@ -1,8 +1,9 @@
 import { action, computed, makeAutoObservable, observable } from 'mobx';
-import { TileSetData } from './types/TileSetData';
+import { CSSProperties } from 'react';
 import { ComponentData } from './types/ComponentData';
+import { TileSetData } from './types/TileSetData';
 
-export default class ComboStore {
+export default class TilesStore {
   @observable currentComboCounter: number;
   @observable comboCounts: number[];
   @observable tileSet: TileSetData;
@@ -53,6 +54,16 @@ export default class ComboStore {
         this.resetCurrentComboCounter();
         this.resetSelectedTileIndex();
       }
+    }
+  };
+
+  @action onTileClick = (rowIndex: number, columnIndex: number) => {
+    if (this.selectedTileIndex === undefined) {
+      this.setSelectedTileIndex(rowIndex, columnIndex);
+    } else if (this.isSelected(rowIndex, columnIndex)) {
+      // no-op
+    } else {
+      this.matchTiles(rowIndex, columnIndex);
     }
   };
 
@@ -117,4 +128,32 @@ export default class ComboStore {
       secondTileComponentIds.includes(id)
     );
   };
+
+  getStyle(rowIndex: number, columnIndex: number): CSSProperties {
+    let backgroundColor: string;
+
+    // TODO parameterize these colors
+    if (rowIndex % 2 === 0 && columnIndex % 2 === 0) {
+      backgroundColor = 'white';
+    } else if (rowIndex % 2 === 0 && columnIndex % 2 !== 0) {
+      backgroundColor = '#dddddd';
+    } else if (rowIndex % 2 !== 0 && columnIndex % 2 === 0) {
+      backgroundColor = '#dddddd';
+    } else {
+      backgroundColor = 'white';
+    }
+
+    return { backgroundColor };
+  }
+
+  isSelected(rowIndex: number, columnIndex: number): boolean {
+    if (this.selectedTileIndex === undefined) {
+      return false;
+    } else {
+      return (
+        this.selectedTileIndex[0] === rowIndex &&
+        this.selectedTileIndex[1] === columnIndex
+      );
+    }
+  }
 }

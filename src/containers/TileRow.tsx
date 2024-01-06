@@ -9,8 +9,8 @@ interface TileRowProps {
 }
   
 const TileRow: FC<TileRowProps> = ({ rowIndex }) => {
-    const { comboStore } = useContext(RootContext);
-    const tileRow = comboStore.tileSet[rowIndex];
+    const { tilesStore } = useContext(RootContext);
+    const tileRow = tilesStore.tileSet[rowIndex];
 
     return (
         <div id={`tilerow_${rowIndex}`}>

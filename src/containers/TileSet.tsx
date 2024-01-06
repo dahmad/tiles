@@ -6,11 +6,11 @@ import './TileSet.css';
 
   
 const TileSet: FC = () => {
-    const { comboStore } = useContext(RootContext);
+    const { tilesStore } = useContext(RootContext);
 
     return (
         <div id="tileSet">
-            {comboStore.tileSet.map((_, i) => {     
+            {tilesStore.tileSet.map((_, i) => {     
                 return (<TileRow key={i} rowIndex={i} />) 
             })}
         </div>

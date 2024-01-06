@@ -4,12 +4,12 @@ import { RootContext } from '../RootContext';
 import './LongestCombo.css';
 
 const LongestCombo: FC = () => {
-  const { comboStore } = useContext(RootContext);
+  const { tilesStore } = useContext(RootContext);
 
   return (
     <div className="combo-row align-right">
       <div className="combo-title">Longest Combo</div>
-      <div className="combo-count">{comboStore.longestComboCount}</div>
+      <div className="combo-count">{tilesStore.longestComboCount}</div>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import ComboStore from '../ComboStore';
+import TilesStore from '../TilesStore';
 import { RootContextProvider } from '../RootContext';
 import { mockTileSetData, renderWithMockProvider } from '../testHelpers';
 import Tile from './Tile';
@@ -28,11 +28,11 @@ test('clicking a tile selects it', () => {
       ['a', 'b'],
     ],
   ]);
-  const comboStore = new ComboStore(mockTileSet);
-  renderWithMockProvider(<Tile rowIndex={1} columnIndex={1} />, { comboStore });
+  const tilesStore = new TilesStore(mockTileSet);
+  renderWithMockProvider(<Tile rowIndex={1} columnIndex={1} />, { tilesStore });
 
   const button = screen.getByRole('button');
   fireEvent.click(button);
-  expect(comboStore.selectedTileIndex).toEqual([1, 1]);
+  expect(tilesStore.selectedTileIndex).toEqual([1, 1]);
   expect(button).toHaveClass('selected');
 });
