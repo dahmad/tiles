@@ -1,6 +1,5 @@
 import { observer } from 'mobx-react-lite';
 import { FC, useContext } from 'react';
-import TilesStore from '../TilesStore';
 import { RootContext } from '../RootContext';
 import { ComponentData } from '../types/ComponentData';
 import './Tile.css';
@@ -9,21 +8,6 @@ interface TileProps {
   rowIndex: number;
   columnIndex: number;
 }
-
-const shouldSetSelectedTileIndex = (
-  tilesStore: TilesStore,
-  rowIndex: number,
-  columnIndex: number
-): boolean => {
-  if (tilesStore.selectedTileIndex === undefined) {
-    return true;
-  } else {
-    return (
-      tilesStore.selectedTileIndex[0] === rowIndex &&
-      tilesStore.selectedTileIndex[1] === columnIndex
-    );
-  }
-};
 
 const backgroundColor = (rowIndex: number, columnIndex: number): string => {
   if (rowIndex % 2 === 0 && columnIndex % 2 === 0) {
@@ -45,16 +29,8 @@ const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
     <div
       role="button"
       id={`tile_${rowIndex}_${columnIndex}`}
-      onClick={() => {
-        if (shouldSetSelectedTileIndex(tilesStore, rowIndex, columnIndex)) {
-          tilesStore.setSelectedTileIndex(rowIndex, columnIndex);
-        } else {
-          tilesStore.matchTiles(rowIndex, columnIndex);
-        }
-      }}
-      className={
-        tilesStore.isSelected(rowIndex, columnIndex) ? 'selected' : ''
-      }
+      onClick={() => tilesStore.onTileClick(rowIndex, columnIndex)}
+      className={tilesStore.isSelected(rowIndex, columnIndex) ? 'selected' : ''}
       style={{
         backgroundColor: backgroundColor(rowIndex, columnIndex),
       }}

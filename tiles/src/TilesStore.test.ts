@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import TilesStore from './TilesStore';
 import { mockTileSetData } from './testHelpers';
 
@@ -246,5 +247,56 @@ describe('isSelected', () => {
 
     expect(tilesStore.isSelected(0, 1)).toBeTruthy();
     expect(tilesStore.isSelected(0, 0)).toBeFalsy();
+  });
+});
+
+describe('onTileClick()', () => {
+  it('selects tile if none are selected', () => {
+    const mockTileSet = mockTileSetData([[['a'], ['a']]]);
+    const tilesStore = new TilesStore(mockTileSet);
+
+    const matchTileSpy = sinon.spy();
+    tilesStore.matchTiles = matchTileSpy;
+
+    expect(tilesStore.selectedTileIndex).toBeUndefined();
+    tilesStore.onTileClick(0, 1);
+    expect(tilesStore.selectedTileIndex).toEqual([0, 1]);
+
+    expect(matchTileSpy.notCalled).toBeTruthy();
+  });
+
+  it('does nothing if clicked tile if already selected', () => {
+    const mockTileSet = mockTileSetData([[['a'], ['a']]]);
+    const tilesStore = new TilesStore(mockTileSet);
+
+    tilesStore.setSelectedTileIndex(0, 1);
+
+    const setSelectedTileIndexSpy = sinon.spy();
+    tilesStore.setSelectedTileIndex = setSelectedTileIndexSpy;
+    const matchTileSpy = sinon.spy();
+    tilesStore.matchTiles = matchTileSpy;
+
+    tilesStore.onTileClick(0, 1);
+    expect(tilesStore.selectedTileIndex).toEqual([0, 1]);
+
+    expect(setSelectedTileIndexSpy.notCalled).toBeTruthy();
+    expect(matchTileSpy.notCalled).toBeTruthy();
+  });
+
+  it('matches tiles when second tile clicked', () => {
+    const mockTileSet = mockTileSetData([[['a'], ['a']]]);
+    const tilesStore = new TilesStore(mockTileSet);
+
+    tilesStore.setSelectedTileIndex(0, 1);
+
+    const setSelectedTileIndexSpy = sinon.spy();
+    tilesStore.setSelectedTileIndex = setSelectedTileIndexSpy;
+    const matchTileSpy = sinon.spy();
+    tilesStore.matchTiles = matchTileSpy;
+
+    tilesStore.onTileClick(0, 0);
+
+    expect(setSelectedTileIndexSpy.notCalled).toBeTruthy();
+    expect(matchTileSpy.calledOnce).toBeTruthy();
   });
 });

@@ -1,6 +1,6 @@
 import { action, computed, makeAutoObservable, observable } from 'mobx';
-import { TileSetData } from './types/TileSetData';
 import { ComponentData } from './types/ComponentData';
+import { TileSetData } from './types/TileSetData';
 
 export default class TilesStore {
   @observable currentComboCounter: number;
@@ -53,6 +53,16 @@ export default class TilesStore {
         this.resetCurrentComboCounter();
         this.resetSelectedTileIndex();
       }
+    }
+  };
+
+  @action onTileClick = (rowIndex: number, columnIndex: number) => {
+    if (this.selectedTileIndex === undefined) {
+      this.setSelectedTileIndex(rowIndex, columnIndex);
+    } else if (this.isSelected(rowIndex, columnIndex)) {
+      // no-op
+    } else {
+      this.matchTiles(rowIndex, columnIndex);
     }
   };
 
