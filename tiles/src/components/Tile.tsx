@@ -49,7 +49,7 @@ const backgroundColor = (rowIndex: number, columnIndex: number): string => {
     return '#dddddd';
   }
 
-  return '';
+  return 'white';
 };
 
 const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
