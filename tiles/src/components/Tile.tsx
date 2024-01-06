@@ -2,6 +2,7 @@ import { observer } from 'mobx-react-lite';
 import { FC, useContext } from 'react';
 import ComboStore from '../ComboStore';
 import { RootContext } from '../RootContext';
+import { ComponentData } from '../types/ComponentData';
 import './Tile.css';
 
 interface TileProps {
@@ -26,6 +27,7 @@ const shouldSetSelectedTileIndex = (
 
 const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
   const { comboStore } = useContext(RootContext);
+  const tile = comboStore.tileSet[rowIndex][columnIndex];
 
   return (
     <button
@@ -39,7 +41,16 @@ const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
         }
       }}
     >
-      {String(comboStore.tileSet[rowIndex][columnIndex])}
+      {tile.map((component: ComponentData, i: number) => {
+        return (
+          <img
+            key={`component_${i}`}
+            src={`data:image/svg+xml;utf8,${encodeURIComponent(component.svg)}`}
+            alt={component.id}
+            style={{ zIndex: i + 1 }}
+          />
+        );
+      })}
     </button>
   );
 };

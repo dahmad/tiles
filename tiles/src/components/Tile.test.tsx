@@ -13,4 +13,5 @@ test('renders', () => {
   );
 
   expect(screen.getAllByRole('button').length).toEqual(1);
+  expect(screen.getAllByRole('img').length).toEqual(2);
 });

@@ -1,4 +1,12 @@
-[id^="tile_"] {
-    height: 10vmin;
-    width: 10vmin;
+[id^='tile_'] {
+  height: 10vmin;
+  width: 10vmin;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+img {
+  position: absolute;
 }
