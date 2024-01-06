@@ -9,18 +9,6 @@ interface TileProps {
   columnIndex: number;
 }
 
-const backgroundColor = (rowIndex: number, columnIndex: number): string => {
-  if (rowIndex % 2 === 0 && columnIndex % 2 === 0) {
-    return 'white';
-  } else if (rowIndex % 2 === 0 && columnIndex % 2 !== 0) {
-    return '#dddddd';
-  } else if (rowIndex % 2 !== 0 && columnIndex % 2 === 0) {
-    return '#dddddd';
-  }
-
-  return 'white';
-};
-
 const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
   const { tilesStore } = useContext(RootContext);
   const tile = tilesStore.tileSet[rowIndex][columnIndex];
@@ -31,9 +19,7 @@ const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
       id={`tile_${rowIndex}_${columnIndex}`}
       onClick={() => tilesStore.onTileClick(rowIndex, columnIndex)}
       className={tilesStore.isSelected(rowIndex, columnIndex) ? 'selected' : ''}
-      style={{
-        backgroundColor: backgroundColor(rowIndex, columnIndex),
-      }}
+      style={tilesStore.getStyle(rowIndex, columnIndex)}
     >
       {tile.map((component: ComponentData, i: number) => {
         return (

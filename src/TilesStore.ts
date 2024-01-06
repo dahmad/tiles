@@ -1,4 +1,5 @@
 import { action, computed, makeAutoObservable, observable } from 'mobx';
+import { CSSProperties } from 'react';
 import { ComponentData } from './types/ComponentData';
 import { TileSetData } from './types/TileSetData';
 
@@ -127,6 +128,23 @@ export default class TilesStore {
       secondTileComponentIds.includes(id)
     );
   };
+
+  getStyle(rowIndex: number, columnIndex: number): CSSProperties {
+    let backgroundColor: string;
+
+    // TODO parameterize these colors
+    if (rowIndex % 2 === 0 && columnIndex % 2 === 0) {
+      backgroundColor = 'white';
+    } else if (rowIndex % 2 === 0 && columnIndex % 2 !== 0) {
+      backgroundColor = '#dddddd';
+    } else if (rowIndex % 2 !== 0 && columnIndex % 2 === 0) {
+      backgroundColor = '#dddddd';
+    } else {
+      backgroundColor = 'white';
+    }
+
+    return { backgroundColor };
+  }
 
   isSelected(rowIndex: number, columnIndex: number): boolean {
     if (this.selectedTileIndex === undefined) {

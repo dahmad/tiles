@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import TilesStore from './TilesStore';
 import { mockTileSetData } from './testHelpers';
+import { TileRowData } from './types/TileRowData';
 
 const emptyTileSet = [[[], []]];
 
@@ -299,4 +300,24 @@ describe('onTileClick()', () => {
     expect(setSelectedTileIndexSpy.notCalled).toBeTruthy();
     expect(matchTileSpy.calledOnce).toBeTruthy();
   });
+});
+
+it('alternates colors', () => {
+  const mockTileSet = mockTileSetData([
+    [['a'], ['a']],
+    [['a'], ['a']],
+  ]);
+  const tilesStore = new TilesStore(mockTileSet);
+  const result = tilesStore.tileSet.map(
+    (tileRow: TileRowData, rowNumber: number) => {
+      return tileRow.map((_, columnNumber: number) => {
+        return tilesStore.getStyle(rowNumber, columnNumber);
+      });
+    }
+  );
+
+  expect(result).toEqual([
+    [{ backgroundColor: 'white' }, { backgroundColor: '#dddddd' }],
+    [{ backgroundColor: '#dddddd' }, { backgroundColor: 'white' }],
+  ]);
 });
