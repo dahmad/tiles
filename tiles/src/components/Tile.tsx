@@ -30,9 +30,9 @@ const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
   const tile = comboStore.tileSet[rowIndex][columnIndex];
 
   return (
-    <button
+    <div
+      role="button"
       id={`tile_${rowIndex}_${columnIndex}`}
-      disabled={comboStore.tileSet[rowIndex][columnIndex].length === 0}
       onClick={() => {
         if (shouldSetSelectedTileIndex(comboStore, rowIndex, columnIndex)) {
           comboStore.setSelectedTileIndex(rowIndex, columnIndex);
@@ -51,7 +51,7 @@ const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
           />
         );
       })}
-    </button>
+    </div>
   );
 };
 
