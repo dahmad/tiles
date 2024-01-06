@@ -4,38 +4,44 @@ import { renderWithMockProvider } from '../testHelpers';
 import ComboCounts from './ComboCounts';
 
 test('renders combo counts', () => {
-    const comboStore = new ComboStore([[]]);
+  const comboStore = new ComboStore([[]]);
 
-    renderWithMockProvider(<ComboCounts />, { comboStore });
-    
-    expect(screen.getByText(/current combo: 0/i)).toBeInTheDocument();
-    expect(screen.getByText(/longest combo: 0/i)).toBeInTheDocument();
-    
-    act(() => {
-        comboStore.incrementCurrentComboCounter();
-    })
-    
-    expect(screen.getByText(/current combo: 1/i)).toBeInTheDocument();
-    expect(screen.getByText(/longest combo: 1/i)).toBeInTheDocument();
+  renderWithMockProvider(<ComboCounts />, { comboStore });
 
-    act(() => {
-        comboStore.resetCurrentComboCounter();
-    })
+  expect(screen.getByText(/current combo/i)).toBeInTheDocument();
+  expect(screen.getByText(/longest combo/i)).toBeInTheDocument();
+  expect(screen.getAllByText(/0/i).length).toEqual(2);
 
-    expect(screen.getByText(/current combo: 0/i)).toBeInTheDocument();
-    expect(screen.getByText(/longest combo: 1/i)).toBeInTheDocument();
+  act(() => {
+    comboStore.incrementCurrentComboCounter();
+  });
 
-    act(() => {
-        comboStore.incrementCurrentComboCounter();
-    })
+  expect(screen.getByText(/current combo/i)).toBeInTheDocument();
+  expect(screen.getByText(/longest combo/i)).toBeInTheDocument();
+  expect(screen.getAllByText(/1/i).length).toEqual(2);
 
-    expect(screen.getByText(/current combo: 1/i)).toBeInTheDocument();
-    expect(screen.getByText(/longest combo: 1/i)).toBeInTheDocument();
+  act(() => {
+    comboStore.resetCurrentComboCounter();
+  });
 
-    act(() => {
-        comboStore.incrementCurrentComboCounter();
-    })
+  expect(screen.getByText(/current combo/i)).toBeInTheDocument();
+  expect(screen.getByText(/longest combo/i)).toBeInTheDocument();
+  expect(screen.getAllByText(/0/i).length).toEqual(1);
+  expect(screen.getAllByText(/1/i).length).toEqual(1);
 
-    expect(screen.getByText(/current combo: 2/i)).toBeInTheDocument();
-    expect(screen.getByText(/longest combo: 2/i)).toBeInTheDocument();
+  act(() => {
+    comboStore.incrementCurrentComboCounter();
+  });
+
+  expect(screen.getByText(/current combo/i)).toBeInTheDocument();
+  expect(screen.getByText(/longest combo/i)).toBeInTheDocument();
+  expect(screen.getAllByText(/1/i).length).toEqual(2);
+
+  act(() => {
+    comboStore.incrementCurrentComboCounter();
+  });
+
+  expect(screen.getByText(/current combo/i)).toBeInTheDocument();
+  expect(screen.getByText(/longest combo/i)).toBeInTheDocument();
+  expect(screen.getAllByText(/2/i).length).toEqual(2);
 });

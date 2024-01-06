@@ -4,39 +4,44 @@ import { renderWithMockProvider } from '../testHelpers';
 import LongestCombo from './LongestCombo';
 
 test('renders longest combo count', () => {
-    const comboStore = new ComboStore([[]]);
+  const comboStore = new ComboStore([[]]);
 
-    renderWithMockProvider(<LongestCombo />, { comboStore });
-    
-    // Longest combo count follows current count at start
-    expect(screen.getByText(/longest combo: 0/i)).toBeInTheDocument();
-    
-    act(() => {
-        comboStore.incrementCurrentComboCounter();
-        comboStore.incrementCurrentComboCounter();
-    })
-    
-    expect(screen.getByText(/longest combo: 2/i)).toBeInTheDocument();
+  renderWithMockProvider(<LongestCombo />, { comboStore });
 
-    // Longest combo count is retained after current combo count is reset
-    act(() => {
-        comboStore.resetCurrentComboCounter();
-    })
+  // Longest combo count follows current count at start
+  expect(screen.getByText(/longest combo/i)).toBeInTheDocument();
+  expect(screen.getByText(/0/i)).toBeInTheDocument();
 
-    expect(screen.getByText(/longest combo: 2/i)).toBeInTheDocument();
+  act(() => {
+    comboStore.incrementCurrentComboCounter();
+    comboStore.incrementCurrentComboCounter();
+  });
 
-    // Longest combo count is retained while current count is less than longest
-    act(() => {
-        comboStore.incrementCurrentComboCounter();
-    })
+  expect(screen.getByText(/longest combo/i)).toBeInTheDocument();
+  expect(screen.getByText(/2/i)).toBeInTheDocument();
 
-    expect(screen.getByText(/longest combo: 2/i)).toBeInTheDocument();
+  // Longest combo count is retained after current combo count is reset
+  act(() => {
+    comboStore.resetCurrentComboCounter();
+  });
 
-    // Longest combo count is updated when current count surpasses previous longest
-    act(() => {
-        comboStore.incrementCurrentComboCounter();
-        comboStore.incrementCurrentComboCounter();
-    })
+  expect(screen.getByText(/longest combo/i)).toBeInTheDocument();
+  expect(screen.getByText(/2/i)).toBeInTheDocument();
 
-    expect(screen.getByText(/longest combo: 3/i)).toBeInTheDocument();
+  // Longest combo count is retained while current count is less than longest
+  act(() => {
+    comboStore.incrementCurrentComboCounter();
+  });
+
+  expect(screen.getByText(/longest combo/i)).toBeInTheDocument();
+  expect(screen.getByText(/2/i)).toBeInTheDocument();
+
+  // Longest combo count is updated when current count surpasses previous longest
+  act(() => {
+    comboStore.incrementCurrentComboCounter();
+    comboStore.incrementCurrentComboCounter();
+  });
+
+  expect(screen.getByText(/longest combo/i)).toBeInTheDocument();
+  expect(screen.getByText(/3/i)).toBeInTheDocument();
 });
