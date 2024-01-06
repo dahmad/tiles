@@ -40,6 +40,18 @@ const isSelected = (
   }
 };
 
+const backgroundColor = (rowIndex: number, columnIndex: number): string => {
+  if (rowIndex % 2 === 0 && columnIndex % 2 === 0) {
+    return 'white';
+  } else if (rowIndex % 2 === 0 && columnIndex % 2 !== 0) {
+    return '#dddddd';
+  } else if (rowIndex % 2 !== 0 && columnIndex % 2 === 0) {
+    return '#dddddd';
+  }
+
+  return '';
+};
+
 const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
   const { comboStore } = useContext(RootContext);
   const tile = comboStore.tileSet[rowIndex][columnIndex];
@@ -58,6 +70,9 @@ const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
       className={
         isSelected(comboStore, rowIndex, columnIndex) ? 'selected' : ''
       }
+      style={{
+        backgroundColor: backgroundColor(rowIndex, columnIndex),
+      }}
     >
       {tile.map((component: ComponentData, i: number) => {
         return (
