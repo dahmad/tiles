@@ -1,5 +1,6 @@
 #comboCounts {
-  width: 50%;
+  padding: 3vmin;
+  width: 49vmin;
   margin: auto;
 }
 
@@ -8,17 +9,12 @@
   flex-direction: row;
 }
 
-.combo-row {
-  width: 50%;
-  flex: 1;
-}
-
 .combo-title {
-  font: bold 1em 'Fira Sans', sans-serif;
+  font: bold 2vmin 'Fira Sans', sans-serif;
 }
 
 .combo-count {
-  font: bold 3em 'Fira Sans', sans-serif;
+  font: bold 7vmin 'Fira Sans', sans-serif;
   padding: 1%;
 }
 
