@@ -1,5 +1,5 @@
 export type LayerData = {
-  componentTypeName: string;
+  groupName: string;
   id: string;
   svg: string;
 };

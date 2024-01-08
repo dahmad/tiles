@@ -24,13 +24,13 @@ export default class TileSetService {
 
   findIndexesOfTilesMissingComponentType = (
     tileSet: TileData[],
-    componentTypeName: string
+    groupName: string
   ): number[] => {
     let indexes: number[] = [];
 
     tileSet.forEach((tile: TileData, i: number) => {
       let hasComponentType = tile.find(
-        (component: any) => component.componentTypeName === componentTypeName
+        (component: any) => component.groupName === groupName
       );
       if (!hasComponentType) {
         indexes.push(i);
@@ -53,17 +53,17 @@ export default class TileSetService {
   generateTileSetData = (): void => {
     const theme = this.readTheme();
 
-    let componentTypeName: string;
+    let groupName: string;
 
     theme.layerGroups.forEach((componentType: ThemeComponentType) => {
-      componentTypeName = componentType.name;
+      groupName = componentType.name;
       for (let i = 0; i < (this.rowSize * this.columnSize) / 2; i++) {
         let randomComponent =
           componentType.variants[
             ~~(Math.random() * componentType.variants.length)
           ];
-        this.pushComponent(componentTypeName, randomComponent);
-        this.pushComponent(componentTypeName, randomComponent);
+        this.pushComponent(groupName, randomComponent);
+        this.pushComponent(groupName, randomComponent);
       }
     });
   };
@@ -73,17 +73,17 @@ export default class TileSetService {
   };
 
   pushComponent = (
-    componentTypeName: string,
+    groupName: string,
     randomComponent: ThemeComponent
   ): void => {
     let indexes = this.findIndexesOfTilesMissingComponentType(
       this.tileSet,
-      componentTypeName
+      groupName
     );
     let index = indexes[~~(Math.random() * indexes.length)];
     let tileCopy = new Array(...this.tileSet[index]);
     tileCopy.push({
-      componentTypeName: componentTypeName,
+      groupName: groupName,
       id: randomComponent.id,
       svg: randomComponent.svg,
     });

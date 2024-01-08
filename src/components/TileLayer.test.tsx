@@ -5,7 +5,7 @@ import TileLayer from './TileLayer';
 test('renders an img', () => {
   render(
     <TileLayer
-      component={{ componentTypeName: 'foo', id: 'bar', svg: 'baz' }}
+      component={{ groupName: 'foo', id: 'bar', svg: 'baz' }}
       zIndex={0}
     />
   );

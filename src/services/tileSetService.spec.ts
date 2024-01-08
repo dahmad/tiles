@@ -3,9 +3,9 @@ import { LayerData } from '../types/LayerData';
 import { TileData } from '../types/TileData';
 import TileSetService from './tileSetService';
 
-const mockLayerData = (componentTypeName: string): LayerData => {
+const mockLayerData = (groupName: string): LayerData => {
   return {
-    componentTypeName,
+    groupName,
     id: '',
     svg: '',
   };
@@ -123,15 +123,15 @@ describe('pushComponent()', () => {
       [],
       [],
       [],
-      [{ componentTypeName: 'type1', id: 'id1', svg: 'svg1' }],
+      [{ groupName: 'type1', id: 'id1', svg: 'svg1' }],
     ]);
 
     tileSetService.pushComponent('type1', { id: 'id2', svg: 'svg2' });
     expect(tileSetService.tileSet).toEqual([
       [],
       [],
-      [{ componentTypeName: 'type1', id: 'id1', svg: 'svg1' }],
-      [{ componentTypeName: 'type1', id: 'id2', svg: 'svg2' }],
+      [{ groupName: 'type1', id: 'id1', svg: 'svg1' }],
+      [{ groupName: 'type1', id: 'id2', svg: 'svg2' }],
     ]);
   });
 });

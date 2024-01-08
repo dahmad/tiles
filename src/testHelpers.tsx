@@ -16,11 +16,11 @@ export const renderWithMockProvider = (
 };
 
 export const mockLayerData = (
-  componentTypeName: string,
+  groupName: string,
   id: string,
   svg: string
 ): LayerData => {
-  return { componentTypeName, id, svg };
+  return { groupName, id, svg };
 };
 
 export const mockTileData = (componentIds: string[]): TileData => {
