@@ -59,8 +59,8 @@ export default class TileSetService {
       componentTypeName = componentType.name;
       for (let i = 0; i < (this.rowSize * this.columnSize) / 2; i++) {
         let randomComponent =
-          componentType.components[
-            ~~(Math.random() * componentType.components.length)
+          componentType.variants[
+            ~~(Math.random() * componentType.variants.length)
           ];
         this.pushComponent(componentTypeName, randomComponent);
         this.pushComponent(componentTypeName, randomComponent);

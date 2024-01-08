@@ -77,14 +77,14 @@ describe('generateTileSetData()', () => {
       layerGroups: [
         {
           name: 'back',
-          components: [
+          variants: [
             { id: '1', svg: '1' },
             { id: '2', svg: '2' },
           ],
         },
         {
           name: 'front',
-          components: [
+          variants: [
             { id: '3', svg: '3' },
             { id: '4', svg: '4' },
           ],
