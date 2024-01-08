@@ -55,7 +55,7 @@ export default class TileSetService {
 
     let componentTypeName: string;
 
-    theme.componentTypes.forEach((componentType: ThemeComponentType) => {
+    theme.layerGroups.forEach((componentType: ThemeComponentType) => {
       componentTypeName = componentType.name;
       for (let i = 0; i < (this.rowSize * this.columnSize) / 2; i++) {
         let randomComponent =

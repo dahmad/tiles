@@ -1,6 +1,6 @@
 {
     "name": "Hong Kong",
-    "componentTypes": [
+    "layerGroups": [
         {
             "name": "corner",
             "components": [

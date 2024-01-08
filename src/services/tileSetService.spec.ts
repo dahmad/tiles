@@ -74,7 +74,7 @@ describe('generateTileSetData()', () => {
     const readThemeStub = sinon.stub();
     readThemeStub.returns({
       name: 'Foo Theme',
-      componentTypes: [
+      layerGroups: [
         {
           name: 'back',
           components: [
