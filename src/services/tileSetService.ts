@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { Theme } from '../types/Theme';
-import { ThemeComponent } from '../types/ThemeComponent';
-import { ThemeComponentType } from '../types/ThemeComponentType';
+import { LayerVariant } from '../types/LayerVariant';
+import { LayerGroup } from '../types/LayerGroup';
 import { TileData } from '../types/TileData';
 import { TileSetData } from '../types/TileSetData';
 
@@ -24,13 +24,13 @@ export default class TileSetService {
 
   findIndexesOfTilesMissingComponentType = (
     tileSet: TileData[],
-    componentTypeName: string
+    groupName: string
   ): number[] => {
     let indexes: number[] = [];
 
     tileSet.forEach((tile: TileData, i: number) => {
       let hasComponentType = tile.find(
-        (component: any) => component.componentTypeName === componentTypeName
+        (component: any) => component.groupName === groupName
       );
       if (!hasComponentType) {
         indexes.push(i);
@@ -53,17 +53,17 @@ export default class TileSetService {
   generateTileSetData = (): void => {
     const theme = this.readTheme();
 
-    let componentTypeName: string;
+    let groupName: string;
 
-    theme.componentTypes.forEach((componentType: ThemeComponentType) => {
-      componentTypeName = componentType.name;
+    theme.layerGroups.forEach((componentType: LayerGroup) => {
+      groupName = componentType.name;
       for (let i = 0; i < (this.rowSize * this.columnSize) / 2; i++) {
         let randomComponent =
-          componentType.components[
-            ~~(Math.random() * componentType.components.length)
+          componentType.variants[
+            ~~(Math.random() * componentType.variants.length)
           ];
-        this.pushComponent(componentTypeName, randomComponent);
-        this.pushComponent(componentTypeName, randomComponent);
+        this.pushComponent(groupName, randomComponent);
+        this.pushComponent(groupName, randomComponent);
       }
     });
   };
@@ -73,17 +73,17 @@ export default class TileSetService {
   };
 
   pushComponent = (
-    componentTypeName: string,
-    randomComponent: ThemeComponent
+    groupName: string,
+    randomComponent: LayerVariant
   ): void => {
     let indexes = this.findIndexesOfTilesMissingComponentType(
       this.tileSet,
-      componentTypeName
+      groupName
     );
     let index = indexes[~~(Math.random() * indexes.length)];
     let tileCopy = new Array(...this.tileSet[index]);
     tileCopy.push({
-      componentTypeName: componentTypeName,
+      groupName: groupName,
       id: randomComponent.id,
       svg: randomComponent.svg,
     });

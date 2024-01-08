@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { ReactNode } from 'react';
 import { RootContext, RootContextType } from './RootContext';
-import { ComponentData } from './types/ComponentData';
+import { LayerData } from './types/LayerData';
 import { TileData } from './types/TileData';
 import { TileRowData } from './types/TileRowData';
 import { TileSetData } from './types/TileSetData';
@@ -15,17 +15,17 @@ export const renderWithMockProvider = (
   );
 };
 
-export const mockComponentData = (
-  componentTypeName: string,
+export const mockLayerData = (
+  groupName: string,
   id: string,
   svg: string
-): ComponentData => {
-  return { componentTypeName, id, svg };
+): LayerData => {
+  return { groupName, id, svg };
 };
 
 export const mockTileData = (componentIds: string[]): TileData => {
   return componentIds.map((componentId: string) => {
-    return mockComponentData('', componentId, '');
+    return mockLayerData('', componentId, '');
   });
 };
 

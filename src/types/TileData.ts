@@ -1,3 +1,3 @@
-import { ComponentData } from './ComponentData';
+import { LayerData } from './LayerData';
 
-export type TileData = ComponentData[];
+export type TileData = LayerData[];

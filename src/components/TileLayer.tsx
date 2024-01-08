@@ -1,10 +1,10 @@
 import { observer } from 'mobx-react-lite';
 import React, { FC } from 'react';
-import { ComponentData } from '../types/ComponentData';
+import { LayerData } from '../types/LayerData';
 import './TileLayer.css';
 
 interface TileLayerProps {
-  component: ComponentData;
+  component: LayerData;
   zIndex: number;
 }
 

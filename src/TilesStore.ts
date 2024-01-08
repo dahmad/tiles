@@ -1,6 +1,6 @@
 import { action, computed, makeAutoObservable, observable } from 'mobx';
 import { CSSProperties } from 'react';
-import { ComponentData } from './types/ComponentData';
+import { LayerData } from './types/LayerData';
 import { TileSetData } from './types/TileSetData';
 
 export default class TilesStore {
@@ -103,7 +103,7 @@ export default class TilesStore {
     this.tileSet[rowIndex][columnIndex] = this.tileSet[rowIndex][
       columnIndex
     ].filter(
-      (component: ComponentData) =>
+      (component: LayerData) =>
         !intersectingComponents.includes(component.id)
     );
   };
@@ -116,12 +116,12 @@ export default class TilesStore {
   ): string[] => {
     let firstTile = this.tileSet[firstRowIndex][firstColumnIndex];
     const firstTileComponentIds = firstTile.map(
-      (component: ComponentData) => component.id
+      (component: LayerData) => component.id
     );
 
     let secondTile = this.tileSet[secondRowIndex][secondColumnIndex];
     const secondTileComponentIds = secondTile.map(
-      (component: ComponentData) => component.id
+      (component: LayerData) => component.id
     );
 
     return firstTileComponentIds.filter((id: string) =>

@@ -1,11 +1,11 @@
 import * as sinon from 'sinon';
-import { ComponentData } from '../types/ComponentData';
+import { LayerData } from '../types/LayerData';
 import { TileData } from '../types/TileData';
 import TileSetService from './tileSetService';
 
-const mockComponentData = (componentTypeName: string): ComponentData => {
+const mockLayerData = (groupName: string): LayerData => {
   return {
-    componentTypeName,
+    groupName,
     id: '',
     svg: '',
   };
@@ -29,12 +29,12 @@ describe('findIndexesOfTilesMissingComponentType()', () => {
   const tileSetService = new TileSetService('path/to/foo', 2, 2);
   const tileSet = [
     [
-      mockComponentData('foo'),
-      mockComponentData('bar'),
-      mockComponentData('baz'),
+      mockLayerData('foo'),
+      mockLayerData('bar'),
+      mockLayerData('baz'),
     ],
-    [mockComponentData('foo')],
-    [mockComponentData('foo')],
+    [mockLayerData('foo')],
+    [mockLayerData('foo')],
   ];
 
   it('has tiles missing type', () => {
@@ -74,17 +74,17 @@ describe('generateTileSetData()', () => {
     const readThemeStub = sinon.stub();
     readThemeStub.returns({
       name: 'Foo Theme',
-      componentTypes: [
+      layerGroups: [
         {
           name: 'back',
-          components: [
+          variants: [
             { id: '1', svg: '1' },
             { id: '2', svg: '2' },
           ],
         },
         {
           name: 'front',
-          components: [
+          variants: [
             { id: '3', svg: '3' },
             { id: '4', svg: '4' },
           ],
@@ -123,15 +123,15 @@ describe('pushComponent()', () => {
       [],
       [],
       [],
-      [{ componentTypeName: 'type1', id: 'id1', svg: 'svg1' }],
+      [{ groupName: 'type1', id: 'id1', svg: 'svg1' }],
     ]);
 
     tileSetService.pushComponent('type1', { id: 'id2', svg: 'svg2' });
     expect(tileSetService.tileSet).toEqual([
       [],
       [],
-      [{ componentTypeName: 'type1', id: 'id1', svg: 'svg1' }],
-      [{ componentTypeName: 'type1', id: 'id2', svg: 'svg2' }],
+      [{ groupName: 'type1', id: 'id1', svg: 'svg1' }],
+      [{ groupName: 'type1', id: 'id2', svg: 'svg2' }],
     ]);
   });
 });
