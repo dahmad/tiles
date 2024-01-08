@@ -1,4 +1,4 @@
-export type ThemeComponent = {
+export type LayerVariant = {
   id: string;
   svg: string;
 };

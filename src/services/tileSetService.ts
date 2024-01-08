@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { Theme } from '../types/Theme';
-import { ThemeComponent } from '../types/ThemeComponent';
+import { LayerVariant } from '../types/LayerVariant';
 import { LayerGroup } from '../types/LayerGroup';
 import { TileData } from '../types/TileData';
 import { TileSetData } from '../types/TileSetData';
@@ -74,7 +74,7 @@ export default class TileSetService {
 
   pushComponent = (
     groupName: string,
-    randomComponent: ThemeComponent
+    randomComponent: LayerVariant
   ): void => {
     let indexes = this.findIndexesOfTilesMissingComponentType(
       this.tileSet,
