@@ -22,7 +22,7 @@ const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
       className={tilesStore.isSelected(rowIndex, columnIndex) ? 'selected' : ''}
       style={tilesStore.getStyle(rowIndex, columnIndex)}
     >
-      {tile.map((component: ComponentData, i: number) => {
+      {!tilesStore.loading && tile.map((component: ComponentData, i: number) => {
         return (
           <TileLayer key={`component_${i}`} component={component} zIndex={i} />
         );

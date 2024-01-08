@@ -2,18 +2,37 @@ import { action, computed, makeAutoObservable, observable } from 'mobx';
 import { CSSProperties } from 'react';
 import { ComponentData } from './types/ComponentData';
 import { TileSetData } from './types/TileSetData';
+import axios from 'axios';
 
 export default class TilesStore {
   @observable currentComboCounter: number;
   @observable comboCounts: number[];
   @observable tileSet: TileSetData;
   @observable selectedTileIndex: [number, number] | undefined;
+  @observable loading: boolean;
+  rowSize: number;
+  columnSize: number;
 
-  constructor(tileSet: TileSetData) {
+  constructor(tileSet: TileSetData, rowSize: number = 5, columnSize: number = 6) {
     makeAutoObservable(this);
+    this.loading = true;
+    
+    this.tileSet = [];
+    this.rowSize = rowSize;
+    this.columnSize = columnSize;
+    
     this.currentComboCounter = 0;
     this.comboCounts = [];
-    this.tileSet = tileSet;
+    this.getTileSet();
+  }
+
+  @action getTileSet = async (): Promise<void> => {
+    const response = await axios({
+      method: 'get',
+      url: `http://127.0.0.1:8000/theme/hongKong/generate?rowSize=${this.rowSize}&columnSize=${this.columnSize}`,
+    });
+    this.tileSet = response.data;
+    this.loading = false;
   }
 
   @action incrementCurrentComboCounter = (): void => {
@@ -143,7 +162,12 @@ export default class TilesStore {
       backgroundColor = 'white';
     }
 
-    return { backgroundColor };
+    const { innerWidth: width, innerHeight: height } = window;
+    console.log(width)
+    console.log(height)
+    let dimensions = 66 / Math.max(this.rowSize, this.columnSize);
+
+    return { backgroundColor, height: `${dimensions}vmin`, width: `${dimensions}vmin` };
   }
 
   isSelected(rowIndex: number, columnIndex: number): boolean {
