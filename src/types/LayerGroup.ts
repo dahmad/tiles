@@ -1,6 +1,6 @@
 import { ThemeComponent } from './ThemeComponent';
 
-export type ThemeComponentType = {
+export type LayerGroup = {
   name: string;
   variants: ThemeComponent[];
 };

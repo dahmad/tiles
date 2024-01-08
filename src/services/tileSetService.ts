@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { Theme } from '../types/Theme';
 import { ThemeComponent } from '../types/ThemeComponent';
-import { ThemeComponentType } from '../types/ThemeComponentType';
+import { LayerGroup } from '../types/LayerGroup';
 import { TileData } from '../types/TileData';
 import { TileSetData } from '../types/TileSetData';
 
@@ -55,7 +55,7 @@ export default class TileSetService {
 
     let groupName: string;
 
-    theme.layerGroups.forEach((componentType: ThemeComponentType) => {
+    theme.layerGroups.forEach((componentType: LayerGroup) => {
       groupName = componentType.name;
       for (let i = 0; i < (this.rowSize * this.columnSize) / 2; i++) {
         let randomComponent =
