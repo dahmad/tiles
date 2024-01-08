@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import React, { FC, useContext } from 'react';
 import { RootContext } from '../RootContext';
-import { ComponentData } from '../types/ComponentData';
+import { LayerData } from '../types/LayerData';
 import './Tile.css';
 import TileLayer from './TileLayer';
 
@@ -22,7 +22,7 @@ const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
       className={tilesStore.isSelected(rowIndex, columnIndex) ? 'selected' : ''}
       style={tilesStore.getStyle(rowIndex, columnIndex)}
     >
-      {tile.map((component: ComponentData, i: number) => {
+      {tile.map((component: LayerData, i: number) => {
         return (
           <TileLayer key={`component_${i}`} component={component} zIndex={i} />
         );

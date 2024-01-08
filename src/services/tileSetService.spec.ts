@@ -1,9 +1,9 @@
 import * as sinon from 'sinon';
-import { ComponentData } from '../types/ComponentData';
+import { LayerData } from '../types/LayerData';
 import { TileData } from '../types/TileData';
 import TileSetService from './tileSetService';
 
-const mockComponentData = (componentTypeName: string): ComponentData => {
+const mockLayerData = (componentTypeName: string): LayerData => {
   return {
     componentTypeName,
     id: '',
@@ -29,12 +29,12 @@ describe('findIndexesOfTilesMissingComponentType()', () => {
   const tileSetService = new TileSetService('path/to/foo', 2, 2);
   const tileSet = [
     [
-      mockComponentData('foo'),
-      mockComponentData('bar'),
-      mockComponentData('baz'),
+      mockLayerData('foo'),
+      mockLayerData('bar'),
+      mockLayerData('baz'),
     ],
-    [mockComponentData('foo')],
-    [mockComponentData('foo')],
+    [mockLayerData('foo')],
+    [mockLayerData('foo')],
   ];
 
   it('has tiles missing type', () => {
