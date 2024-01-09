@@ -4,7 +4,7 @@ from typing import List
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from .tile_sets import THEMES, generate_tile_set, load_theme
+from tile_sets import THEMES, generate_tile_set, load_theme
 
 app = FastAPI()
 
