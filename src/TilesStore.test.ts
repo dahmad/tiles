@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import TilesStore from './TilesStore';
-import { mockTileSetData } from './testHelpers';
+import * as api from './api';
+import { mockTheme, mockTileSetData } from './testHelpers';
 import { TileRowData } from './types/TileRowData';
 
 const emptyTileSet = [[[], []]];
@@ -302,22 +303,113 @@ describe('onTileClick()', () => {
   });
 });
 
-it('alternates colors', () => {
-  const mockTileSet = mockTileSetData([
-    [['a'], ['a']],
-    [['a'], ['a']],
-  ]);
-  const tilesStore = new TilesStore(mockTileSet);
-  const result = tilesStore.tileSet.map(
-    (tileRow: TileRowData, rowNumber: number) => {
-      return tileRow.map((_, columnNumber: number) => {
-        return tilesStore.getStyle(rowNumber, columnNumber);
-      });
-    }
-  );
+describe('getAppStyle', () => {
+  beforeEach(() => {
+    sinon.restore();
+  });
 
-  expect(result).toEqual([
-    [{ backgroundColor: 'white' }, { backgroundColor: '#dddddd' }],
-    [{ backgroundColor: '#dddddd' }, { backgroundColor: 'white' }],
-  ]);
+  it('reads color from theme', async () => {
+    const getThemeStub = sinon.stub(api, 'getTheme');
+    getThemeStub.resolves(mockTheme);
+    const tilesStore = new TilesStore(emptyTileSet);
+
+    await Promise.all(getThemeStub.returnValues);
+
+    expect(tilesStore.getAppStyle()).toEqual({
+      color: 'white',
+      backgroundColor: 'red',
+    });
+  });
+
+  it('uses default when theme api call fails', async () => {
+    const getThemeStub = sinon.stub(api, 'getTheme');
+    getThemeStub.resolves(undefined);
+    const tilesStore = new TilesStore(emptyTileSet);
+
+    await Promise.all(getThemeStub.returnValues);
+
+    expect(tilesStore.getAppStyle()).toEqual({
+      color: 'black',
+      backgroundColor: 'white',
+    });
+  });
+});
+
+describe('getTileStyle', () => {
+  beforeEach(() => {
+    sinon.restore();
+  });
+
+  it('reads color from theme', async () => {
+    const mockTileSet = mockTileSetData([
+      [['a'], ['a']],
+      [['a'], ['a']],
+    ]);
+    const getThemeStub = sinon.stub(api, 'getTheme');
+    getThemeStub.resolves(mockTheme);
+    const tilesStore = new TilesStore(mockTileSet);
+
+    await Promise.all(getThemeStub.returnValues);
+
+    const result = tilesStore.tileSet.map(
+      (tileRow: TileRowData, rowNumber: number) => {
+        return tileRow.map((_, columnNumber: number) => {
+          return tilesStore.getTileStyle(rowNumber, columnNumber);
+        });
+      }
+    );
+
+    expect(result).toEqual([
+      [{ backgroundColor: 'blue' }, { backgroundColor: 'black' }],
+      [{ backgroundColor: 'black' }, { backgroundColor: 'blue' }],
+    ]);
+  });
+
+  it('uses default when theme api call fails', async () => {
+    const mockTileSet = mockTileSetData([
+      [['a'], ['a']],
+      [['a'], ['a']],
+    ]);
+    const getThemeStub = sinon.stub(api, 'getTheme');
+    getThemeStub.resolves(undefined);
+    const tilesStore = new TilesStore(mockTileSet);
+
+    await Promise.all(getThemeStub.returnValues);
+
+    const result = tilesStore.tileSet.map(
+      (tileRow: TileRowData, rowNumber: number) => {
+        return tileRow.map((_, columnNumber: number) => {
+          return tilesStore.getTileStyle(rowNumber, columnNumber);
+        });
+      }
+    );
+
+    expect(result).toEqual([
+      [{ backgroundColor: 'white' }, { backgroundColor: '#dddddd' }],
+      [{ backgroundColor: '#dddddd' }, { backgroundColor: 'white' }],
+    ]);
+  });
+});
+
+describe('this.getTheme', () => {
+  beforeEach(() => {
+    sinon.restore();
+  });
+
+  it('calls getTheme in constructor', () => {
+    const geThemeStub = sinon.stub(api, 'getTheme');
+    new TilesStore(emptyTileSet);
+    expect(geThemeStub.calledOnce).toBeTruthy();
+  });
+
+  it('sets theme', () => {
+    const geThemeStub = sinon.stub(api, 'getTheme');
+    geThemeStub.returns(
+      new Promise(() => {
+        return mockTheme;
+      })
+    );
+    new TilesStore(emptyTileSet);
+    expect(geThemeStub.calledOnce).toBeTruthy();
+  });
 });

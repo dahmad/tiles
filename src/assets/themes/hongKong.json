@@ -1,5 +1,9 @@
 {
     "name": "Hong Kong",
+    "appBackgroundColor": "#c7cab2",
+    "fontColor": "black",
+    "tileBackgroundColorPrimary": "white",
+    "tileBackgroundColorSecondary": "#dddddd",
     "layerGroups": [
         {
             "name": "corner",

@@ -1,6 +1,8 @@
 import { action, computed, makeAutoObservable, observable } from 'mobx';
 import { CSSProperties } from 'react';
+import { getTheme } from './api';
 import { LayerData } from './types/LayerData';
+import { Theme } from './types/Theme';
 import { TileSetData } from './types/TileSetData';
 
 export default class TilesStore {
@@ -8,13 +10,19 @@ export default class TilesStore {
   @observable comboCounts: number[];
   @observable tileSet: TileSetData;
   @observable selectedTileIndex: [number, number] | undefined;
+  theme: Theme | undefined = undefined;
 
-  constructor(tileSet: TileSetData) {
+  constructor(tileSet: TileSetData, themeName: string = 'test') {
     makeAutoObservable(this);
     this.currentComboCounter = 0;
     this.comboCounts = [];
     this.tileSet = tileSet;
+    this.getTheme(themeName);
   }
+
+  @action getTheme = async (themeName: string): Promise<void> => {
+    this.theme = await getTheme(themeName);
+  };
 
   @action incrementCurrentComboCounter = (): void => {
     this.currentComboCounter += 1;
@@ -103,8 +111,7 @@ export default class TilesStore {
     this.tileSet[rowIndex][columnIndex] = this.tileSet[rowIndex][
       columnIndex
     ].filter(
-      (component: LayerData) =>
-        !intersectingComponents.includes(component.id)
+      (component: LayerData) => !intersectingComponents.includes(component.id)
     );
   };
 
@@ -129,18 +136,42 @@ export default class TilesStore {
     );
   };
 
-  getStyle(rowIndex: number, columnIndex: number): CSSProperties {
+  getAppStyle(): CSSProperties {
+    const DEFAULT_APP_BACKGROUND_COLOR = 'white';
+    const DEFAULT_FONT_COLOR = 'black';
+
+    let backgroundColor: string;
+    let color: string;
+
+    if (this.theme !== undefined) {
+      backgroundColor = this.theme.appBackgroundColor;
+      color = this.theme.fontColor;
+    } else {
+      backgroundColor = DEFAULT_APP_BACKGROUND_COLOR;
+      color = DEFAULT_FONT_COLOR;
+    }
+
+    return { backgroundColor, color };
+  }
+
+  getTileStyle(rowIndex: number, columnIndex: number): CSSProperties {
+    const DEFAULT_PRIMARY_BACKGROUND_COLOR = 'white';
+    const DEFAULT_SECONDARY_BACKGROUND_COLOR = '#dddddd';
+
     let backgroundColor: string;
 
-    // TODO parameterize these colors
-    if (rowIndex % 2 === 0 && columnIndex % 2 === 0) {
-      backgroundColor = 'white';
-    } else if (rowIndex % 2 === 0 && columnIndex % 2 !== 0) {
-      backgroundColor = '#dddddd';
-    } else if (rowIndex % 2 !== 0 && columnIndex % 2 === 0) {
-      backgroundColor = '#dddddd';
+    const useSecondaryColor =
+      (rowIndex % 2 === 0 && columnIndex % 2 !== 0) ||
+      (rowIndex % 2 !== 0 && columnIndex % 2 === 0);
+
+    if (this.theme !== undefined) {
+      backgroundColor = useSecondaryColor
+        ? this.theme.tileBackgroundColorSecondary
+        : this.theme.tileBackgroundColorPrimary;
     } else {
-      backgroundColor = 'white';
+      backgroundColor = useSecondaryColor
+        ? DEFAULT_SECONDARY_BACKGROUND_COLOR
+        : DEFAULT_PRIMARY_BACKGROUND_COLOR;
     }
 
     return { backgroundColor };

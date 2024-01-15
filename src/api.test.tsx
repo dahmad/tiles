@@ -1,6 +1,6 @@
 import nock from 'nock';
 import { generateTileSet, getTheme } from './api';
-import { mockTileSetData } from './testHelpers';
+import { mockTheme, mockTileSetData } from './testHelpers';
 import { Theme } from './types/Theme';
 
 describe('generateTileSet', () => {
@@ -24,10 +24,7 @@ describe('generateTileSet', () => {
 
 describe('getTheme', () => {
   it('gets generated tile set', async () => {
-    const expectedResponse: Theme = {
-      name: 'Foo',
-      layerGroups: [],
-    };
+    const expectedResponse: Theme = mockTheme;
     nock('http://127.0.0.1:8000')
       .get('/theme/test')
       .reply(200, expectedResponse);
