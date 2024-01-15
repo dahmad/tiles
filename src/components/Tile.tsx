@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import React, { FC, useContext } from 'react';
+import { FC, useContext } from 'react';
 import { RootContext } from '../RootContext';
 import { LayerData } from '../types/LayerData';
 import './Tile.css';
@@ -20,7 +20,7 @@ const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
       id={`tile_${rowIndex}_${columnIndex}`}
       onClick={() => tilesStore.onTileClick(rowIndex, columnIndex)}
       className={tilesStore.isSelected(rowIndex, columnIndex) ? 'selected' : ''}
-      style={tilesStore.getStyle(rowIndex, columnIndex)}
+      style={tilesStore.getTileStyle(rowIndex, columnIndex)}
     >
       {tile.map((component: LayerData, i: number) => {
         return (

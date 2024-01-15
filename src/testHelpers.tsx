@@ -40,3 +40,12 @@ export const mockTileSetData = (tileSet: string[][][]): TileSetData => {
     return mockTileRowData(tileRow);
   });
 };
+
+export const mockTheme = {
+  name: 'Foo',
+  appBackgroundColor: 'red',
+  fontColor: 'white',
+  tileBackgroundColorPrimary: 'blue',
+  tileBackgroundColorSecondary: 'black',
+  layerGroups: [],
+};
