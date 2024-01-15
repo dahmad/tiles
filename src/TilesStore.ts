@@ -157,8 +157,10 @@ export default class TilesStore {
   getTileStyle(rowIndex: number, columnIndex: number): CSSProperties {
     const DEFAULT_PRIMARY_BACKGROUND_COLOR = 'white';
     const DEFAULT_SECONDARY_BACKGROUND_COLOR = '#dddddd';
+    const DEFAULT_SELECTED_TILE_INSET_COLOR = 'black';
 
     let backgroundColor: string;
+    let selectedTileInsetColor: string;
 
     const useSecondaryColor =
       (rowIndex % 2 === 0 && columnIndex % 2 !== 0) ||
@@ -168,10 +170,19 @@ export default class TilesStore {
       backgroundColor = useSecondaryColor
         ? this.theme.tileBackgroundColorSecondary
         : this.theme.tileBackgroundColorPrimary;
+      selectedTileInsetColor = this.theme.selectedTileInsetColor;
     } else {
       backgroundColor = useSecondaryColor
         ? DEFAULT_SECONDARY_BACKGROUND_COLOR
         : DEFAULT_PRIMARY_BACKGROUND_COLOR;
+      selectedTileInsetColor = DEFAULT_SELECTED_TILE_INSET_COLOR;
+    }
+
+    if (this.isSelected(rowIndex, columnIndex)) {
+      return {
+        backgroundColor,
+        boxShadow: `inset 0px 0px 0px 5px ${selectedTileInsetColor}`,
+      };
     }
 
     return { backgroundColor };

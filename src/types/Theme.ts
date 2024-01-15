@@ -6,5 +6,6 @@ export type Theme = {
   fontColor: string;
   tileBackgroundColorPrimary: string;
   tileBackgroundColorSecondary: string;
+  selectedTileInsetColor: string;
   layerGroups: LayerGroup[];
 };

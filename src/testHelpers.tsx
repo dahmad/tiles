@@ -47,5 +47,6 @@ export const mockTheme = {
   fontColor: 'white',
   tileBackgroundColorPrimary: 'blue',
   tileBackgroundColorSecondary: 'black',
+  selectedTileInsetColor: 'yellow',
   layerGroups: [],
 };

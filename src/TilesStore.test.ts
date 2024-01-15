@@ -393,6 +393,44 @@ describe('getTileStyle', () => {
       [{ backgroundColor: '#dddddd' }, { backgroundColor: 'white' }],
     ]);
   });
+
+  it('returns box shadow from theme when tile is selected', async () => {
+    const mockTileSet = mockTileSetData([[['a']]]);
+    const getThemeStub = sinon.stub(api, 'getTheme');
+    getThemeStub.resolves(mockTheme);
+    const tilesStore = new TilesStore(mockTileSet);
+
+    await Promise.all(getThemeStub.returnValues);
+
+    // Does not return box shadow when tile is not selected
+    // this is also implictly asserted in the backgroundColor tests
+    let tileStyle = tilesStore.getTileStyle(0, 0);
+    expect(Object.keys(tileStyle).includes('boxShadow')).toBeFalsy();
+
+    tilesStore.setSelectedTileIndex(0, 0);
+
+    tileStyle = tilesStore.getTileStyle(0, 0);
+    expect(tileStyle.boxShadow).toEqual('inset 0px 0px 0px 5px yellow');
+  });
+
+  it('returns default box shadow when tile is selected', async () => {
+    const mockTileSet = mockTileSetData([[['a']]]);
+    const getThemeStub = sinon.stub(api, 'getTheme');
+    getThemeStub.resolves(undefined);
+    const tilesStore = new TilesStore(mockTileSet);
+
+    await Promise.all(getThemeStub.returnValues);
+
+    // Does not return box shadow when tile is not selected
+    // this is also implictly asserted in the backgroundColor tests
+    let tileStyle = tilesStore.getTileStyle(0, 0);
+    expect(Object.keys(tileStyle).includes('boxShadow')).toBeFalsy();
+
+    tilesStore.setSelectedTileIndex(0, 0);
+
+    tileStyle = tilesStore.getTileStyle(0, 0);
+    expect(tileStyle.boxShadow).toEqual('inset 0px 0px 0px 5px black');
+  });
 });
 
 describe('this.getTheme', () => {
