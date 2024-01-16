@@ -1,7 +1,5 @@
 import { ReactNode, createContext, useMemo, useState } from 'react';
 import TilesStore from './TilesStore';
-import testTileSet from './assets/tileSets/testTileSet.json';
-import { TileSetData } from './types/TileSetData';
 
 export interface RootContextType {
   tilesStore: TilesStore;
@@ -10,16 +8,22 @@ export interface RootContextType {
 export const RootContext = createContext(null as unknown as RootContextType);
 
 interface RootContextProviderProps {
-  tileSetData?: TileSetData | undefined;
+  theme?: string;
+  rowSize?: number;
+  columnSize?: number;
   children: ReactNode;
 }
 
 export function RootContextProvider({
-  tileSetData,
+  theme,
+  rowSize,
+  columnSize,
   children,
 }: RootContextProviderProps) {
-  const tiles = tileSetData === undefined ? testTileSet : tileSetData;
-  const [tilesStore] = useState(() => new TilesStore(tiles));
+  theme ||= 'test';
+  rowSize ||= 5;
+  columnSize ||= 6;
+  const [tilesStore] = useState(() => new TilesStore(theme, rowSize, columnSize));
   const providerValue = useMemo(() => {
     return { tilesStore };
   }, [tilesStore]);

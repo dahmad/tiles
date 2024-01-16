@@ -1,21 +1,24 @@
-import { render, screen } from '@testing-library/react';
-import { RootContextProvider } from '../RootContext';
-import { mockTileSetData } from '../testHelpers';
+import { screen } from '@testing-library/react';
+import sinon from 'sinon';
+import {
+  mockTileSetData,
+  mockTilesStore,
+  renderWithMockProvider,
+} from '../testHelpers';
 import TileSet from './TileSet';
 
-test('renders rows of tiles', () => {
+afterEach(() => {
+  sinon.restore();
+});
+
+test('renders rows of tiles', async () => {
   const mockTileSet = mockTileSetData([
     [
       ['a', 'b'],
       ['c', 'd'],
     ],
   ]);
-
-  render(
-    <RootContextProvider tileSetData={mockTileSet}>
-      <TileSet />
-    </RootContextProvider>
-  );
-
+  const tilesStore = await mockTilesStore(mockTileSet);
+  renderWithMockProvider(<TileSet />, { tilesStore });
   expect(screen.getAllByRole('button').length).toEqual(2);
 });

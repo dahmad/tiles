@@ -4,7 +4,7 @@ import { renderWithMockProvider } from '../testHelpers';
 import LongestCombo from './LongestCombo';
 
 test('renders longest combo count', () => {
-  const tilesStore = new TilesStore([[]]);
+  const tilesStore = new TilesStore();
 
   renderWithMockProvider(<LongestCombo />, { tilesStore });
 

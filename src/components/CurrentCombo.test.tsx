@@ -4,7 +4,7 @@ import { renderWithMockProvider } from '../testHelpers';
 import CurrentCombo from './CurrentCombo';
 
 test('renders current combo count', () => {
-  const tilesStore = new TilesStore([[]]);
+  const tilesStore = new TilesStore();
 
   renderWithMockProvider(<CurrentCombo />, { tilesStore });
 

@@ -1,23 +1,27 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import TilesStore from '../TilesStore';
-import { RootContextProvider } from '../RootContext';
-import { mockTileSetData, renderWithMockProvider } from '../testHelpers';
+import { fireEvent, screen } from '@testing-library/react';
+import sinon from 'sinon';
+import {
+  mockTileSetData,
+  mockTilesStore,
+  renderWithMockProvider,
+} from '../testHelpers';
 import Tile from './Tile';
 
-test('renders', () => {
-  const mockTileSet = mockTileSetData([[['a', 'b']]]);
+afterEach(() => {
+  sinon.restore();
+});
 
-  render(
-    <RootContextProvider tileSetData={mockTileSet}>
-      <Tile rowIndex={0} columnIndex={0} />
-    </RootContextProvider>
-  );
+test('renders', async () => {
+  const mockTileSet = mockTileSetData([[['a', 'b']]]);
+  const tilesStore = await mockTilesStore(mockTileSet);
+
+  renderWithMockProvider(<Tile rowIndex={0} columnIndex={0} />, { tilesStore });
 
   expect(screen.getAllByRole('button').length).toEqual(1);
   expect(screen.getAllByRole('img').length).toEqual(2);
 });
 
-test('clicking a tile selects it', () => {
+test('clicking a tile selects it', async () => {
   const mockTileSet = mockTileSetData([
     [
       ['a', 'b'],
@@ -28,7 +32,7 @@ test('clicking a tile selects it', () => {
       ['a', 'b'],
     ],
   ]);
-  const tilesStore = new TilesStore(mockTileSet);
+  const tilesStore = await mockTilesStore(mockTileSet);
   renderWithMockProvider(<Tile rowIndex={1} columnIndex={1} />, { tilesStore });
 
   const button = screen.getByRole('button');

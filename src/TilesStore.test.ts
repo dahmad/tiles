@@ -1,4 +1,4 @@
-import sinon from 'sinon';
+import sinon, { SinonStub } from 'sinon';
 import TilesStore from './TilesStore';
 import * as api from './api';
 import { mockTheme, mockTileSetData } from './testHelpers';
@@ -7,21 +7,32 @@ import { TileRowData } from './types/TileRowData';
 const emptyTileSet = [[[], []]];
 
 describe('Combo counts', () => {
+  let generateTileSetStub: SinonStub;
+  let tilesStore: TilesStore;
+
+  beforeEach(async () => {
+    generateTileSetStub = sinon.stub(api, 'generateTileSet');
+    generateTileSetStub.resolves(emptyTileSet);
+    tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
   it('starts with a empty combo counts', () => {
-    const tilesStore = new TilesStore(emptyTileSet);
     expect(tilesStore.currentComboCounter).toEqual(0);
     expect(tilesStore.comboCounts).toEqual([]);
   });
 
   it('can increment currentComboCounter', () => {
-    const tilesStore = new TilesStore(emptyTileSet);
     expect(tilesStore.currentComboCounter).toEqual(0);
     tilesStore.incrementCurrentComboCounter();
     expect(tilesStore.currentComboCounter).toEqual(1);
   });
 
   it('can reset currentComboCounter', () => {
-    const tilesStore = new TilesStore(emptyTileSet);
     tilesStore.currentComboCounter = 100;
     expect(tilesStore.currentComboCounter).toEqual(100);
     tilesStore.resetCurrentComboCounter();
@@ -29,8 +40,6 @@ describe('Combo counts', () => {
   });
 
   it('adds to comboCounts when currentComboCounter is reset', () => {
-    const tilesStore = new TilesStore(emptyTileSet);
-
     // Set one combo count
     tilesStore.currentComboCounter = 100;
     expect(tilesStore.currentComboCounter).toEqual(100);
@@ -49,20 +58,17 @@ describe('Combo counts', () => {
   });
 
   it('returns the longest combo count when there are combo counts', () => {
-    const tilesStore = new TilesStore(emptyTileSet);
     tilesStore.comboCounts = [1, 2, 3];
     expect(tilesStore.longestComboCount).toEqual(3);
   });
 
   it('returns the longest combo count including the current count when there are combo counts', () => {
-    const tilesStore = new TilesStore(emptyTileSet);
     tilesStore.currentComboCounter = 30;
     tilesStore.comboCounts = [1, 2, 3];
     expect(tilesStore.longestComboCount).toEqual(30);
   });
 
   it('returns the current combo count when there are no combo counts', () => {
-    const tilesStore = new TilesStore(emptyTileSet);
     expect(tilesStore.longestComboCount).toEqual(0);
     tilesStore.incrementCurrentComboCounter();
     expect(tilesStore.longestComboCount).toEqual(1);
@@ -70,30 +76,45 @@ describe('Combo counts', () => {
 });
 
 describe('Selecting tiles', () => {
-  it('starts with no tiles selected', () => {
-    const tilesStore = new TilesStore(emptyTileSet);
+  let generateTileSetStub: SinonStub;
+
+  beforeEach(async () => {
+    generateTileSetStub = sinon.stub(api, 'generateTileSet');
+    generateTileSetStub.resolves(emptyTileSet);
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('starts with no tiles selected', async () => {
+    generateTileSetStub.resolves(emptyTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
     expect(tilesStore.selectedTileIndex).toBeUndefined();
   });
 
-  it('can select a tile', () => {
+  it('can select a tile', async () => {
     const mockTileSet = mockTileSetData([
       [
         ['a', 'b'],
         ['b', 'c'],
       ],
     ]);
-
-    const tilesStore = new TilesStore(mockTileSet);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
     expect(tilesStore.selectedTileIndex).toBeUndefined();
 
     tilesStore.setSelectedTileIndex(0, 1);
     expect(tilesStore.selectedTileIndex).toEqual([0, 1]);
   });
 
-  it('is a no-op if selected tile is empty', () => {
+  it('is a no-op if selected tile is empty', async () => {
     const mockTileSet = mockTileSetData([[['a', 'b'], []]]);
-
-    const tilesStore = new TilesStore(mockTileSet);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
 
     // Remains undefined
     expect(tilesStore.selectedTileIndex).toBeUndefined();
@@ -106,15 +127,16 @@ describe('Selecting tiles', () => {
     expect(tilesStore.selectedTileIndex).toEqual([0, 0]);
   });
 
-  it('can reset the selected tile', () => {
+  it('can reset the selected tile', async () => {
     const mockTileSet = mockTileSetData([
       [
         ['a', 'b'],
         ['b', 'c'],
       ],
     ]);
-
-    const tilesStore = new TilesStore(mockTileSet);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
     expect(tilesStore.selectedTileIndex).toBeUndefined();
 
     tilesStore.setSelectedTileIndex(0, 1);
@@ -124,55 +146,59 @@ describe('Selecting tiles', () => {
     expect(tilesStore.selectedTileIndex).toBeUndefined();
   });
 
-  it('increments current combo count if tiles match', () => {
+  it('increments current combo count if tiles match', async () => {
     const mockTileSet = mockTileSetData([
       [
         ['a', 'b'],
         ['b', 'c'],
       ],
     ]);
-
-    const tilesStore = new TilesStore(mockTileSet);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
     tilesStore.setSelectedTileIndex(0, 0);
     tilesStore.matchTiles(0, 1);
 
     expect(tilesStore.currentComboCounter).toEqual(1);
   });
 
-  it('selected second tile if tiles match and second tile is not empty', () => {
+  it('selected second tile if tiles match and second tile is not empty', async () => {
     const mockTileSet = mockTileSetData([
       [
         ['a', 'b'],
         ['b', 'c'],
       ],
     ]);
-
-    const tilesStore = new TilesStore(mockTileSet);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
     tilesStore.setSelectedTileIndex(0, 0);
     tilesStore.matchTiles(0, 1);
 
     expect(tilesStore.selectedTileIndex).toEqual([0, 1]);
   });
 
-  it('resets selected tile if tiles match and second tile is empty', () => {
+  it('resets selected tile if tiles match and second tile is empty', async () => {
     const mockTileSet = mockTileSetData([[['a', 'b'], ['b']]]);
-
-    const tilesStore = new TilesStore(mockTileSet);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
     tilesStore.setSelectedTileIndex(0, 0);
     tilesStore.matchTiles(0, 1);
 
     expect(tilesStore.selectedTileIndex).toBeUndefined();
   });
 
-  it("resets current combo count if tiles don't match", () => {
+  it("resets current combo count if tiles don't match", async () => {
     const mockTileSet = mockTileSetData([
       [
         ['a', 'b'],
         ['c', 'd'],
       ],
     ]);
-
-    const tilesStore = new TilesStore(mockTileSet);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
     tilesStore.currentComboCounter = 100;
     tilesStore.setSelectedTileIndex(0, 0);
     tilesStore.matchTiles(0, 1);
@@ -181,29 +207,32 @@ describe('Selecting tiles', () => {
     expect(tilesStore.selectedTileIndex).toBeUndefined();
   });
 
-  it('modifies tiles if tiles match -- single match', () => {
+  it('modifies tiles if tiles match -- single match', async () => {
     const mockTileSet = mockTileSetData([
       [
         ['a', 'b'],
         ['b', 'c'],
       ],
     ]);
-
-    const tilesStore = new TilesStore(mockTileSet);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
     tilesStore.setSelectedTileIndex(0, 0);
     tilesStore.matchTiles(0, 1);
 
     expect(tilesStore.tileSet).toEqual(mockTileSetData([[['a'], ['c']]]));
   });
 
-  it('modifies tiles if tiles match -- many matches', () => {
+  it('modifies tiles if tiles match -- many matches', async () => {
     const mockTileSet = mockTileSetData([
       [
         ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
         ['c', 'd', 'e', 'f', 'g', 'h', 'i'],
       ],
     ]);
-    const tilesStore = new TilesStore(mockTileSet);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
     tilesStore.setSelectedTileIndex(0, 0);
     tilesStore.matchTiles(0, 1);
 
@@ -217,25 +246,27 @@ describe('Selecting tiles', () => {
     );
   });
 
-  it('modifies tiles if tiles match -- final match', () => {
+  it('modifies tiles if tiles match -- final match', async () => {
     const mockTileSet = mockTileSetData([[['a'], ['a']]]);
-
-    const tilesStore = new TilesStore(mockTileSet);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
     tilesStore.setSelectedTileIndex(0, 0);
     tilesStore.matchTiles(0, 1);
 
     expect(tilesStore.tileSet).toEqual(mockTileSetData([[[], []]]));
   });
 
-  it("does not modify tiles if tiles don't match", () => {
+  it("does not modify tiles if tiles don't match", async () => {
     const mockTileSet = mockTileSetData([
       [
         ['a', 'b'],
         ['c', 'd'],
       ],
     ]);
-
-    const tilesStore = new TilesStore(mockTileSet);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
     tilesStore.currentComboCounter = 100;
     tilesStore.setSelectedTileIndex(0, 0);
     tilesStore.matchTiles(0, 1);
@@ -245,10 +276,16 @@ describe('Selecting tiles', () => {
 });
 
 describe('isSelected', () => {
-  it('returns true if tile is selected and false if not', () => {
-    const mockTileSet = mockTileSetData([[['a'], ['a']]]);
+  afterEach(() => {
+    sinon.restore();
+  });
 
-    const tilesStore = new TilesStore(mockTileSet);
+  it('returns true if tile is selected and false if not', async () => {
+    const mockTileSet = mockTileSetData([[['a'], ['a']]]);
+    const generateTileSetStub = sinon.stub(api, 'generateTileSet');
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
     tilesStore.setSelectedTileIndex(0, 1);
 
     expect(tilesStore.isSelected(0, 1)).toBeTruthy();
@@ -257,9 +294,21 @@ describe('isSelected', () => {
 });
 
 describe('onTileClick()', () => {
-  it('selects tile if none are selected', () => {
+  let generateTileSetStub: SinonStub;
+
+  beforeEach(async () => {
+    generateTileSetStub = sinon.stub(api, 'generateTileSet');
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('selects tile if none are selected', async () => {
     const mockTileSet = mockTileSetData([[['a'], ['a']]]);
-    const tilesStore = new TilesStore(mockTileSet);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
 
     const matchTileSpy = sinon.spy();
     tilesStore.matchTiles = matchTileSpy;
@@ -271,9 +320,11 @@ describe('onTileClick()', () => {
     expect(matchTileSpy.notCalled).toBeTruthy();
   });
 
-  it('does nothing if clicked tile if already selected', () => {
+  it('does nothing if clicked tile if already selected', async () => {
     const mockTileSet = mockTileSetData([[['a'], ['a']]]);
-    const tilesStore = new TilesStore(mockTileSet);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
 
     tilesStore.setSelectedTileIndex(0, 1);
 
@@ -289,9 +340,11 @@ describe('onTileClick()', () => {
     expect(matchTileSpy.notCalled).toBeTruthy();
   });
 
-  it('matches tiles when second tile clicked', () => {
+  it('matches tiles when second tile clicked', async () => {
     const mockTileSet = mockTileSetData([[['a'], ['a']]]);
-    const tilesStore = new TilesStore(mockTileSet);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
 
     tilesStore.setSelectedTileIndex(0, 1);
 
@@ -308,14 +361,14 @@ describe('onTileClick()', () => {
 });
 
 describe('getAppStyle', () => {
-  beforeEach(() => {
+  afterEach(() => {
     sinon.restore();
   });
 
   it('reads color from theme', async () => {
     const getThemeStub = sinon.stub(api, 'getTheme');
     getThemeStub.resolves(mockTheme);
-    const tilesStore = new TilesStore(emptyTileSet);
+    const tilesStore = new TilesStore();
 
     await Promise.all(getThemeStub.returnValues);
 
@@ -328,7 +381,7 @@ describe('getAppStyle', () => {
   it('uses default when theme api call fails', async () => {
     const getThemeStub = sinon.stub(api, 'getTheme');
     getThemeStub.resolves(undefined);
-    const tilesStore = new TilesStore(emptyTileSet);
+    const tilesStore = new TilesStore();
 
     await Promise.all(getThemeStub.returnValues);
 
@@ -340,22 +393,33 @@ describe('getAppStyle', () => {
 });
 
 describe('getTileStyle', () => {
-  beforeEach(() => {
+  let generateTileSetStub: SinonStub;
+  let getThemeStub: SinonStub;
+
+  beforeEach(async () => {
+    generateTileSetStub = sinon.stub(api, 'generateTileSet');
+    getThemeStub = sinon.stub(api, 'getTheme');
+  });
+
+  afterEach(() => {
     sinon.restore();
   });
 
   it('reads color from theme', async () => {
+    getThemeStub.resolves(mockTheme);
+
     const mockTileSet = mockTileSetData([
       [['a'], ['a']],
       [['a'], ['a']],
     ]);
-    const getThemeStub = sinon.stub(api, 'getTheme');
-    getThemeStub.resolves(mockTheme);
-    const tilesStore = new TilesStore(mockTileSet);
+    generateTileSetStub.resolves(mockTileSet);
 
+    const tilesStore = new TilesStore();
+    
+    await Promise.all(generateTileSetStub.returnValues);
     await Promise.all(getThemeStub.returnValues);
 
-    const result = tilesStore.tileSet.map(
+    const result = tilesStore?.tileSet?.map(
       (tileRow: TileRowData, rowNumber: number) => {
         return tileRow.map((_, columnNumber: number) => {
           return tilesStore.getTileStyle(rowNumber, columnNumber);
@@ -374,13 +438,16 @@ describe('getTileStyle', () => {
       [['a'], ['a']],
       [['a'], ['a']],
     ]);
-    const getThemeStub = sinon.stub(api, 'getTheme');
-    getThemeStub.resolves(undefined);
-    const tilesStore = new TilesStore(mockTileSet);
 
+    getThemeStub.resolves(undefined);
+    generateTileSetStub.resolves(mockTileSet);
+
+    const tilesStore = new TilesStore();
+    
+    await Promise.all(generateTileSetStub.returnValues);
     await Promise.all(getThemeStub.returnValues);
 
-    const result = tilesStore.tileSet.map(
+    const result = tilesStore?.tileSet?.map(
       (tileRow: TileRowData, rowNumber: number) => {
         return tileRow.map((_, columnNumber: number) => {
           return tilesStore.getTileStyle(rowNumber, columnNumber);
@@ -395,11 +462,13 @@ describe('getTileStyle', () => {
   });
 
   it('returns box shadow from theme when tile is selected', async () => {
-    const mockTileSet = mockTileSetData([[['a']]]);
-    const getThemeStub = sinon.stub(api, 'getTheme');
     getThemeStub.resolves(mockTheme);
-    const tilesStore = new TilesStore(mockTileSet);
+    const mockTileSet = mockTileSetData([[['a']]]);
+    generateTileSetStub.resolves(mockTileSet);
+    
+    const tilesStore = new TilesStore();
 
+    await Promise.all(generateTileSetStub.returnValues);
     await Promise.all(getThemeStub.returnValues);
 
     // Does not return box shadow when tile is not selected
@@ -414,11 +483,14 @@ describe('getTileStyle', () => {
   });
 
   it('returns default box shadow when tile is selected', async () => {
-    const mockTileSet = mockTileSetData([[['a']]]);
-    const getThemeStub = sinon.stub(api, 'getTheme');
     getThemeStub.resolves(undefined);
-    const tilesStore = new TilesStore(mockTileSet);
 
+    const mockTileSet = mockTileSetData([[['a']]]);
+    generateTileSetStub.resolves(mockTileSet);
+
+    const tilesStore = new TilesStore();
+
+    await Promise.all(generateTileSetStub.returnValues);
     await Promise.all(getThemeStub.returnValues);
 
     // Does not return box shadow when tile is not selected
@@ -434,24 +506,25 @@ describe('getTileStyle', () => {
 });
 
 describe('this.getTheme', () => {
-  beforeEach(() => {
+  let getThemeStub: SinonStub;
+
+  beforeEach(async () => {
+    getThemeStub = sinon.stub(api, 'getTheme');
+  });
+
+  afterEach(() => {
     sinon.restore();
   });
 
   it('calls getTheme in constructor', () => {
-    const geThemeStub = sinon.stub(api, 'getTheme');
-    new TilesStore(emptyTileSet);
-    expect(geThemeStub.calledOnce).toBeTruthy();
+    new TilesStore();
+    expect(getThemeStub.calledOnce).toBeTruthy();
   });
 
-  it('sets theme', () => {
-    const geThemeStub = sinon.stub(api, 'getTheme');
-    geThemeStub.returns(
-      new Promise(() => {
-        return mockTheme;
-      })
-    );
-    new TilesStore(emptyTileSet);
-    expect(geThemeStub.calledOnce).toBeTruthy();
+  it('sets theme', async () => {
+    getThemeStub.resolves(mockTheme);
+    const tilesStore = new TilesStore();
+    await Promise.all(getThemeStub.returnValues);
+    expect(tilesStore.theme).toEqual(mockTheme);
   });
 });

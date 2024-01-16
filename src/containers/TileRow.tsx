@@ -5,20 +5,19 @@ import Tile from '../components/Tile';
 import './TileRow.css';
 
 interface TileRowProps {
-    rowIndex: number;
+  rowIndex: number;
 }
-  
-const TileRow: FC<TileRowProps> = ({ rowIndex }) => {
-    const { tilesStore } = useContext(RootContext);
-    const tileRow = tilesStore.tileSet[rowIndex];
 
-    return (
-        <div id={`tilerow_${rowIndex}`}>
-            {tileRow.map((_, i) => {     
-                return (<Tile key={i} rowIndex={rowIndex} columnIndex={i}/>) 
-            })}
-        </div>
-    );
-}
+const TileRow: FC<TileRowProps> = ({ rowIndex }) => {
+  const { tilesStore } = useContext(RootContext);
+  return (
+    <div id={`tilerow_${rowIndex}`}>
+      {tilesStore.tileSet &&
+        tilesStore.tileSet[rowIndex].map((_, i) => {
+          return <Tile key={i} rowIndex={rowIndex} columnIndex={i} />;
+        })}
+    </div>
+  );
+};
 
 export default observer(TileRow);

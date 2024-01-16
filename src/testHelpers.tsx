@@ -1,7 +1,11 @@
 import { render } from '@testing-library/react';
 import { ReactNode } from 'react';
+import sinon from 'sinon';
 import { RootContext, RootContextType } from './RootContext';
+import TilesStore from './TilesStore';
+import * as api from './api';
 import { LayerData } from './types/LayerData';
+import { Theme } from './types/Theme';
 import { TileData } from './types/TileData';
 import { TileRowData } from './types/TileRowData';
 import { TileSetData } from './types/TileSetData';
@@ -49,4 +53,18 @@ export const mockTheme = {
   tileBackgroundColorSecondary: 'black',
   selectedTileInsetColor: 'yellow',
   layerGroups: [],
+};
+
+export const mockTilesStore = async (
+  tileSet: TileSetData = mockTileSetData([]),
+  theme: Theme = mockTheme
+): Promise<TilesStore> => {
+  const generateTileSetStub = sinon.stub(api, 'generateTileSet');
+  generateTileSetStub.resolves(tileSet);
+  const getThemeStub = sinon.stub(api, 'getTheme');
+  getThemeStub.resolves(theme);
+  const tilesStore = new TilesStore();
+  await Promise.all(generateTileSetStub.returnValues);
+  await Promise.all(getThemeStub.returnValues);
+  return tilesStore;
 };
