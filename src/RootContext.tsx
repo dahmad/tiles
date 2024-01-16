@@ -1,5 +1,6 @@
 import { ReactNode, createContext, useMemo, useState } from 'react';
 import TilesStore from './TilesStore';
+import { useParams } from 'react-router-dom';
 
 export interface RootContextType {
   tilesStore: TilesStore;
@@ -15,11 +16,11 @@ interface RootContextProviderProps {
 }
 
 export function RootContextProvider({
-  theme,
   rowSize,
   columnSize,
   children,
 }: RootContextProviderProps) {
+  let { theme } = useParams();
   theme ||= 'test';
   rowSize ||= 5;
   columnSize ||= 6;
