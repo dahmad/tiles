@@ -8,6 +8,8 @@ import { TileSetData } from './types/TileSetData';
 export default class TilesStore {
   @observable currentComboCounter: number;
   @observable comboCounts: number[];
+  @observable intersectingLayerIds: string[] = [];
+  @observable selectedMatchIndex: [number, number] | undefined;
   @observable selectedTileIndex: [number, number] | undefined;
   @observable tileSet: TileSetData | undefined = undefined;
   theme: Theme | undefined = undefined;
@@ -23,6 +25,26 @@ export default class TilesStore {
     this.getTheme(themeName);
     this.generateTileSet(themeName, rowSize, columnSize);
   }
+
+  @action filterIntersectingLayers = (): void => {
+    if (
+      this.tileSet === undefined ||
+      this.selectedTileIndex === undefined ||
+      this.selectedMatchIndex === undefined
+    ) {
+      return;
+    }
+
+    let [r, c] = this.selectedTileIndex;
+    this.tileSet[r][c] = this.tileSet[r][c].filter(
+      (layer: LayerData) => !this.intersectingLayerIds.includes(layer.id)
+    );
+
+    [r, c] = this.selectedMatchIndex;
+    this.tileSet[r][c] = this.tileSet[r][c].filter(
+      (layer: LayerData) => !this.intersectingLayerIds.includes(layer.id)
+    );
+  };
 
   @action getTheme = async (themeName: string): Promise<void> => {
     this.theme = await getTheme(themeName);
@@ -41,40 +63,25 @@ export default class TilesStore {
   };
 
   @action matchTiles = (rowIndex: number, columnIndex: number): void => {
-    if (this.tileSet !== undefined && this.selectedTileIndex !== undefined) {
-      const [selectedRowIndex, selectedColumnIndex] = this.selectedTileIndex;
+    this.setSelectedMatchIndex(rowIndex, columnIndex);
+    this.setIntersectingLayerIds();
 
-      const intersectingComponents = this.getIntersectingComponents(
-        selectedRowIndex,
-        selectedColumnIndex,
-        rowIndex,
-        columnIndex
-      );
+    if (this.intersectingLayerIds.length > 0) {
+      this.incrementCurrentComboCounter();
+      this.filterIntersectingLayers();
 
-      if (intersectingComponents.length > 0) {
-        this.incrementCurrentComboCounter();
-
-        this.filterIntersectingComponents(
-          selectedRowIndex,
-          selectedColumnIndex,
-          intersectingComponents
-        );
-        this.filterIntersectingComponents(
-          rowIndex,
-          columnIndex,
-          intersectingComponents
-        );
-
-        if (this.tileSet[rowIndex][columnIndex].length === 0) {
-          this.resetSelectedTileIndex();
-        } else {
-          this.setSelectedTileIndex(rowIndex, columnIndex);
-        }
-      } else {
-        this.resetCurrentComboCounter();
+      if (this.tileSet && this.tileSet[rowIndex][columnIndex].length === 0) {
         this.resetSelectedTileIndex();
+      } else {
+        this.setSelectedTileIndex(rowIndex, columnIndex);
       }
+    } else {
+      this.resetCurrentComboCounter();
+      this.resetSelectedTileIndex();
     }
+
+    this.resetSelectedMatchIndex();
+    this.resetIntersectingLayerIds();
   };
 
   @action onTileClick = (rowIndex: number, columnIndex: number) => {
@@ -92,8 +99,53 @@ export default class TilesStore {
     this.currentComboCounter = 0;
   };
 
+  @action resetIntersectingLayerIds = (): void => {
+    this.intersectingLayerIds = [];
+  };
+
+  @action resetSelectedMatchIndex = (): void => {
+    this.selectedMatchIndex = undefined;
+  };
+
   @action resetSelectedTileIndex = (): void => {
     this.selectedTileIndex = undefined;
+  };
+
+  @action setIntersectingLayerIds = (): void => {
+    if (
+      this.tileSet === undefined ||
+      this.selectedTileIndex === undefined ||
+      this.selectedMatchIndex === undefined
+    ) {
+      return;
+    }
+
+    let [r, c] = this.selectedTileIndex;
+    const firstTileLayerIds = this.tileSet[r][c].map(
+      (layer: LayerData) => layer.id
+    );
+
+    [r, c] = this.selectedMatchIndex;
+    const secondTileLayerIds = this.tileSet[r][c].map(
+      (layer: LayerData) => layer.id
+    );
+
+    this.intersectingLayerIds = firstTileLayerIds.filter((id: string) =>
+      secondTileLayerIds.includes(id)
+    );
+  };
+
+  @action setSelectedMatchIndex = (
+    rowIndex: number,
+    columnIndex: number
+  ): void => {
+    if (this.tileSet !== undefined) {
+      if (this.tileSet[rowIndex][columnIndex].length === 0) {
+        // no-op
+      } else {
+        this.selectedMatchIndex = [rowIndex, columnIndex];
+      }
+    }
   };
 
   @action setSelectedTileIndex = (
@@ -116,45 +168,6 @@ export default class TilesStore {
 
     return Math.max(...this.comboCounts, this.currentComboCounter);
   }
-
-  filterIntersectingComponents = (
-    rowIndex: number,
-    columnIndex: number,
-    intersectingComponents: string[]
-  ): void => {
-    if (this.tileSet !== undefined) {
-      this.tileSet[rowIndex][columnIndex] = this.tileSet[rowIndex][
-        columnIndex
-      ].filter(
-        (component: LayerData) => !intersectingComponents.includes(component.id)
-      );
-    }
-  };
-
-  getIntersectingComponents = (
-    firstRowIndex: number,
-    firstColumnIndex: number,
-    secondRowIndex: number,
-    secondColumnIndex: number
-  ): string[] => {
-    if (this.tileSet !== undefined) {
-      let firstTile = new Array(...this.tileSet[firstRowIndex][firstColumnIndex]);
-      const firstTileComponentIds = firstTile.map(
-        (component: LayerData) => component.id
-      );
-
-      let secondTile = new Array(...this.tileSet[secondRowIndex][secondColumnIndex]);
-      const secondTileComponentIds = secondTile.map(
-        (component: LayerData) => component.id
-      );
-
-      return firstTileComponentIds.filter((id: string) =>
-        secondTileComponentIds.includes(id)
-      );
-    }
-
-    return [];
-  };
 
   getAppStyle(): CSSProperties {
     const DEFAULT_APP_BACKGROUND_COLOR = 'white';

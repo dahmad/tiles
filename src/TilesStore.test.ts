@@ -110,6 +110,22 @@ describe('Selecting tiles', () => {
     expect(tilesStore.selectedTileIndex).toEqual([0, 1]);
   });
 
+  it('can select a match', async () => {
+    const mockTileSet = mockTileSetData([
+      [
+        ['a', 'b'],
+        ['b', 'c'],
+      ],
+    ]);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
+    expect(tilesStore.selectedMatchIndex).toBeUndefined();
+
+    tilesStore.setSelectedMatchIndex(0, 1);
+    expect(tilesStore.selectedMatchIndex).toEqual([0, 1]);
+  });
+
   it('is a no-op if selected tile is empty', async () => {
     const mockTileSet = mockTileSetData([[['a', 'b'], []]]);
     generateTileSetStub.resolves(mockTileSet);
@@ -125,6 +141,23 @@ describe('Selecting tiles', () => {
     tilesStore.setSelectedTileIndex(0, 0);
     tilesStore.setSelectedTileIndex(0, 1);
     expect(tilesStore.selectedTileIndex).toEqual([0, 0]);
+  });
+
+  it('is a no-op if selected match is empty', async () => {
+    const mockTileSet = mockTileSetData([[['a', 'b'], []]]);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
+
+    // Remains undefined
+    expect(tilesStore.selectedMatchIndex).toBeUndefined();
+    tilesStore.setSelectedMatchIndex(0, 1);
+    expect(tilesStore.selectedMatchIndex).toBeUndefined();
+
+    // Retains previously-selected tile
+    tilesStore.setSelectedMatchIndex(0, 0);
+    tilesStore.setSelectedMatchIndex(0, 1);
+    expect(tilesStore.selectedMatchIndex).toEqual([0, 0]);
   });
 
   it('can reset the selected tile', async () => {
@@ -144,6 +177,25 @@ describe('Selecting tiles', () => {
 
     tilesStore.resetSelectedTileIndex();
     expect(tilesStore.selectedTileIndex).toBeUndefined();
+  });
+
+  it('can reset the selected match', async () => {
+    const mockTileSet = mockTileSetData([
+      [
+        ['a', 'b'],
+        ['b', 'c'],
+      ],
+    ]);
+    generateTileSetStub.resolves(mockTileSet);
+    const tilesStore = new TilesStore();
+    await Promise.all(generateTileSetStub.returnValues);
+    expect(tilesStore.selectedMatchIndex).toBeUndefined();
+
+    tilesStore.setSelectedMatchIndex(0, 1);
+    expect(tilesStore.selectedMatchIndex).toEqual([0, 1]);
+
+    tilesStore.resetSelectedMatchIndex();
+    expect(tilesStore.selectedMatchIndex).toBeUndefined();
   });
 
   it('increments current combo count if tiles match', async () => {

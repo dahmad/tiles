@@ -1,7 +1,7 @@
 {
     "name": "Hong Kong",
-    "appBackgroundColor": "#c7cab2",
-    "fontColor": "black",
+    "appBackgroundColor": "#1b5d39",
+    "fontColor": "white",
     "tileBackgroundColorPrimary": "white",
     "tileBackgroundColorSecondary": "#dddddd",
     "selectedTileInsetColor": "#f00",
