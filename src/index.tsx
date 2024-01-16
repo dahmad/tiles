@@ -4,15 +4,38 @@ import App from './App';
 import { RootContextProvider } from './RootContext';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+
+// both paths currently return the same `element`
+// because the behavior is handled inside the RootContextProvider
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      <RootContextProvider>
+        <App />
+      </RootContextProvider>
+    ),
+  },
+  {
+    path: "/:theme",
+    element: (
+      <RootContextProvider>
+        <App />
+      </RootContextProvider>
+    ),
+  },
+]);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <RootContextProvider>
-      <App />
-    </RootContextProvider>
+    <RouterProvider router={router}/>
   </React.StrictMode>
 );
 
