@@ -17,13 +17,19 @@ const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
     <div
       role="button"
       id={`tile_${rowIndex}_${columnIndex}`}
-      onClick={() => tilesStore.onTileClick(rowIndex, columnIndex)}
+      onClick={async () => await tilesStore.onTileClick(rowIndex, columnIndex)}
       className={tilesStore.isSelected(rowIndex, columnIndex) ? 'selected' : ''}
       style={tilesStore.getTileStyle(rowIndex, columnIndex)}
     >
       {tilesStore.tileSet && tilesStore.tileSet[rowIndex][columnIndex].map((component: LayerData, i: number) => {
         return (
-          <TileLayer key={`component_${i}`} component={component} zIndex={i} />
+          <TileLayer 
+            key={`component_${i}`}
+            rowIndex={rowIndex}
+            columnIndex={columnIndex}
+            component={component}
+            zIndex={i} 
+          />
         );
       })}
     </div>
