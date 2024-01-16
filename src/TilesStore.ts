@@ -8,6 +8,7 @@ import { TileSetData } from './types/TileSetData';
 export default class TilesStore {
   @observable currentComboCounter: number;
   @observable comboCounts: number[];
+  @observable selectedMatchIndex: [number, number] | undefined;
   @observable selectedTileIndex: [number, number] | undefined;
   @observable tileSet: TileSetData | undefined = undefined;
   theme: Theme | undefined = undefined;
@@ -92,8 +93,25 @@ export default class TilesStore {
     this.currentComboCounter = 0;
   };
 
+  @action resetSelectedMatchIndex = (): void => {
+    this.selectedMatchIndex = undefined;
+  };
+
   @action resetSelectedTileIndex = (): void => {
     this.selectedTileIndex = undefined;
+  };
+
+  @action setSelectedMatchIndex = (
+    rowIndex: number,
+    columnIndex: number
+  ): void => {
+    if (this.tileSet !== undefined) {
+      if (this.tileSet[rowIndex][columnIndex].length === 0) {
+        // no-op
+      } else {
+        this.selectedMatchIndex = [rowIndex, columnIndex];
+      }
+    }
   };
 
   @action setSelectedTileIndex = (
@@ -125,9 +143,7 @@ export default class TilesStore {
     if (this.tileSet !== undefined) {
       this.tileSet[rowIndex][columnIndex] = this.tileSet[rowIndex][
         columnIndex
-      ].filter(
-        (layer: LayerData) => !intersectingLayers.includes(layer.id)
-      );
+      ].filter((layer: LayerData) => !intersectingLayers.includes(layer.id));
     }
   };
 
@@ -138,15 +154,15 @@ export default class TilesStore {
     secondColumnIndex: number
   ): string[] => {
     if (this.tileSet !== undefined) {
-      let firstTile = new Array(...this.tileSet[firstRowIndex][firstColumnIndex]);
-      const firstTileLayerIds = firstTile.map(
-        (layer: LayerData) => layer.id
+      let firstTile = new Array(
+        ...this.tileSet[firstRowIndex][firstColumnIndex]
       );
+      const firstTileLayerIds = firstTile.map((layer: LayerData) => layer.id);
 
-      let secondTile = new Array(...this.tileSet[secondRowIndex][secondColumnIndex]);
-      const secondTileLayerIds = secondTile.map(
-        (layer: LayerData) => layer.id
+      let secondTile = new Array(
+        ...this.tileSet[secondRowIndex][secondColumnIndex]
       );
+      const secondTileLayerIds = secondTile.map((layer: LayerData) => layer.id);
 
       return firstTileLayerIds.filter((id: string) =>
         secondTileLayerIds.includes(id)
