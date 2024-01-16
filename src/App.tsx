@@ -9,7 +9,7 @@ const App: FC = () => {
   const { tilesStore } = useContext(RootContext);
 
   return (
-    <div className="App" style={tilesStore.getAppStyle()}>
+    <div className="App" style={tilesStore.appStyle}>
       <header className="App-header" />
       <TileSet />
       <ComboCounts />

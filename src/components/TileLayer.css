@@ -1,0 +1,19 @@
+@keyframes disappear {
+  0% {
+    opacity: 1;
+    transform: rotate(0);
+  }
+  10% {
+    transform: rotate(-0.125turn) scale(1.25, 1.25);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(0.75turn) scale(0.5, 0.5);
+  }
+}
+
+.disappearing {
+  animation-name: disappear;
+  animation-duration: 1750ms;
+  animation-fill-mode: forwards;
+}
