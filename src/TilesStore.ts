@@ -1,6 +1,6 @@
 import { action, computed, makeAutoObservable, observable } from 'mobx';
 import { CSSProperties } from 'react';
-import { getTheme } from './api';
+import { generateTileSet, getTheme } from './api';
 import { LayerData } from './types/LayerData';
 import { Theme } from './types/Theme';
 import { TileSetData } from './types/TileSetData';
@@ -8,20 +8,32 @@ import { TileSetData } from './types/TileSetData';
 export default class TilesStore {
   @observable currentComboCounter: number;
   @observable comboCounts: number[];
-  @observable tileSet: TileSetData;
   @observable selectedTileIndex: [number, number] | undefined;
+  @observable tileSet: TileSetData | undefined = undefined;
   theme: Theme | undefined = undefined;
 
-  constructor(tileSet: TileSetData, themeName: string = 'test') {
+  constructor(
+    themeName: string = 'test',
+    rowSize: number = 5,
+    columnSize: number = 6
+  ) {
     makeAutoObservable(this);
     this.currentComboCounter = 0;
     this.comboCounts = [];
-    this.tileSet = tileSet;
     this.getTheme(themeName);
+    this.generateTileSet(themeName, rowSize, columnSize);
   }
 
   @action getTheme = async (themeName: string): Promise<void> => {
     this.theme = await getTheme(themeName);
+  };
+
+  @action generateTileSet = async (
+    themeName: string,
+    rowSize: number,
+    columnSize: number
+  ): Promise<void> => {
+    this.tileSet = await generateTileSet(themeName, rowSize, columnSize);
   };
 
   @action incrementCurrentComboCounter = (): void => {
@@ -29,7 +41,7 @@ export default class TilesStore {
   };
 
   @action matchTiles = (rowIndex: number, columnIndex: number): void => {
-    if (this.selectedTileIndex !== undefined) {
+    if (this.tileSet !== undefined && this.selectedTileIndex !== undefined) {
       const [selectedRowIndex, selectedColumnIndex] = this.selectedTileIndex;
 
       const intersectingComponents = this.getIntersectingComponents(
@@ -88,10 +100,12 @@ export default class TilesStore {
     rowIndex: number,
     columnIndex: number
   ): void => {
-    if (this.tileSet[rowIndex][columnIndex].length === 0) {
-      // no-op
-    } else {
-      this.selectedTileIndex = [rowIndex, columnIndex];
+    if (this.tileSet !== undefined) {
+      if (this.tileSet[rowIndex][columnIndex].length === 0) {
+        // no-op
+      } else {
+        this.selectedTileIndex = [rowIndex, columnIndex];
+      }
     }
   };
 
@@ -108,11 +122,13 @@ export default class TilesStore {
     columnIndex: number,
     intersectingComponents: string[]
   ): void => {
-    this.tileSet[rowIndex][columnIndex] = this.tileSet[rowIndex][
-      columnIndex
-    ].filter(
-      (component: LayerData) => !intersectingComponents.includes(component.id)
-    );
+    if (this.tileSet !== undefined) {
+      this.tileSet[rowIndex][columnIndex] = this.tileSet[rowIndex][
+        columnIndex
+      ].filter(
+        (component: LayerData) => !intersectingComponents.includes(component.id)
+      );
+    }
   };
 
   getIntersectingComponents = (
@@ -121,19 +137,23 @@ export default class TilesStore {
     secondRowIndex: number,
     secondColumnIndex: number
   ): string[] => {
-    let firstTile = this.tileSet[firstRowIndex][firstColumnIndex];
-    const firstTileComponentIds = firstTile.map(
-      (component: LayerData) => component.id
-    );
+    if (this.tileSet !== undefined) {
+      let firstTile = new Array(...this.tileSet[firstRowIndex][firstColumnIndex]);
+      const firstTileComponentIds = firstTile.map(
+        (component: LayerData) => component.id
+      );
 
-    let secondTile = this.tileSet[secondRowIndex][secondColumnIndex];
-    const secondTileComponentIds = secondTile.map(
-      (component: LayerData) => component.id
-    );
+      let secondTile = new Array(...this.tileSet[secondRowIndex][secondColumnIndex]);
+      const secondTileComponentIds = secondTile.map(
+        (component: LayerData) => component.id
+      );
 
-    return firstTileComponentIds.filter((id: string) =>
-      secondTileComponentIds.includes(id)
-    );
+      return firstTileComponentIds.filter((id: string) =>
+        secondTileComponentIds.includes(id)
+      );
+    }
+
+    return [];
   };
 
   getAppStyle(): CSSProperties {
@@ -157,8 +177,10 @@ export default class TilesStore {
   getTileStyle(rowIndex: number, columnIndex: number): CSSProperties {
     const DEFAULT_PRIMARY_BACKGROUND_COLOR = 'white';
     const DEFAULT_SECONDARY_BACKGROUND_COLOR = '#dddddd';
+    const DEFAULT_SELECTED_TILE_INSET_COLOR = 'black';
 
     let backgroundColor: string;
+    let selectedTileInsetColor: string;
 
     const useSecondaryColor =
       (rowIndex % 2 === 0 && columnIndex % 2 !== 0) ||
@@ -168,10 +190,19 @@ export default class TilesStore {
       backgroundColor = useSecondaryColor
         ? this.theme.tileBackgroundColorSecondary
         : this.theme.tileBackgroundColorPrimary;
+      selectedTileInsetColor = this.theme.selectedTileInsetColor;
     } else {
       backgroundColor = useSecondaryColor
         ? DEFAULT_SECONDARY_BACKGROUND_COLOR
         : DEFAULT_PRIMARY_BACKGROUND_COLOR;
+      selectedTileInsetColor = DEFAULT_SELECTED_TILE_INSET_COLOR;
+    }
+
+    if (this.isSelected(rowIndex, columnIndex)) {
+      return {
+        backgroundColor,
+        boxShadow: `inset 0px 0px 0px 5px ${selectedTileInsetColor}`,
+      };
     }
 
     return { backgroundColor };

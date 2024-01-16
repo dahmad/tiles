@@ -6,24 +6,30 @@ jobs:
   react:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    - name: Setup node.js
-      uses: actions/setup-node@v3
-    - run: yarn install
-    - run: yarn test
-    - run: yarn test
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup node.js
+        uses: actions/setup-node@v3
+      - run: yarn install
+      - run: yarn test
+      - run: yarn test
 
   cypress:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip3 install -r ./requirements.txt
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
           build: yarn build
-          start: yarn start
+          start: yarn start, uvicorn main:app --app-dir app --reload
 
   python:
     runs-on: ubuntu-latest
@@ -32,7 +38,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: '3.11'
       - name: Install dependencies
         run: pip3 install -r ./requirements.txt
       - name: Run tests

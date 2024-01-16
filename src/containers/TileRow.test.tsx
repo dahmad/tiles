@@ -1,40 +1,31 @@
-import { render, screen } from '@testing-library/react';
-import { RootContextProvider } from '../RootContext';
-import { mockTileSetData } from '../testHelpers';
+import { screen } from '@testing-library/react';
+import sinon from 'sinon';
+import {
+  mockTileSetData,
+  mockTilesStore,
+  renderWithMockProvider,
+} from '../testHelpers';
 import TileRow from './TileRow';
 
-test('renders row of tiles', () => {
+afterEach(() => {
+  sinon.restore();
+});
+
+test('renders row of tiles', async () => {
   const mockTileSet = mockTileSetData([
     [
       ['a', 'b'],
       ['c', 'd'],
     ],
   ]);
-
-  render(
-    <RootContextProvider tileSetData={mockTileSet}>
-      <TileRow rowIndex={0} />
-    </RootContextProvider>
-  );
-
+  const tilesStore = await mockTilesStore(mockTileSet);
+  renderWithMockProvider(<TileRow rowIndex={0} />, { tilesStore });
   expect(screen.getAllByRole('button').length).toEqual(2);
 });
 
-test('does not render other rows of tiles', () => {
-  const mockTileSet = mockTileSetData([
-    [
-      ['a', 'b'],
-    ],
-    [
-      ['c', 'd'],
-    ],
-  ]);
-
-  render(
-    <RootContextProvider tileSetData={mockTileSet}>
-      <TileRow rowIndex={0} />
-    </RootContextProvider>
-  );
-
+test('does not render other rows of tiles', async () => {
+  const mockTileSet = mockTileSetData([[['a', 'b']], [['c', 'd']]]);
+  const tilesStore = await mockTilesStore(mockTileSet);
+  renderWithMockProvider(<TileRow rowIndex={0} />, { tilesStore });
   expect(screen.getAllByRole('button').length).toEqual(1);
 });

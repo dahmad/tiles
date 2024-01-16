@@ -12,7 +12,6 @@ interface TileProps {
 
 const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
   const { tilesStore } = useContext(RootContext);
-  const tile = tilesStore.tileSet[rowIndex][columnIndex];
 
   return (
     <div
@@ -22,7 +21,7 @@ const Tile: FC<TileProps> = ({ rowIndex, columnIndex }) => {
       className={tilesStore.isSelected(rowIndex, columnIndex) ? 'selected' : ''}
       style={tilesStore.getTileStyle(rowIndex, columnIndex)}
     >
-      {tile.map((component: LayerData, i: number) => {
+      {tilesStore.tileSet && tilesStore.tileSet[rowIndex][columnIndex].map((component: LayerData, i: number) => {
         return (
           <TileLayer key={`component_${i}`} component={component} zIndex={i} />
         );

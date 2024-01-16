@@ -4,6 +4,7 @@
     "fontColor": "black",
     "tileBackgroundColorPrimary": "white",
     "tileBackgroundColorSecondary": "#dddddd",
+    "selectedTileInsetColor": "#f00",
     "layerGroups": [
         {
             "name": "corner",
