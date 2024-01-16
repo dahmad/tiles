@@ -8,7 +8,7 @@ client = TestClient(app)
 def test_read_themes():
     response = client.get("/themes")
     assert response.status_code == 200
-    assert response.json() == ["hongKong", "test"]
+    assert response.json() == ["hongKong", "paseo", "test"]
 
 
 def test_read_theme():

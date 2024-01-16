@@ -8,6 +8,7 @@ from fastapi import HTTPException
 
 THEMES = [
     "hongKong",
+    "paseo",
     "test",
 ]
 
