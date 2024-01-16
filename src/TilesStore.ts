@@ -44,25 +44,25 @@ export default class TilesStore {
     if (this.tileSet !== undefined && this.selectedTileIndex !== undefined) {
       const [selectedRowIndex, selectedColumnIndex] = this.selectedTileIndex;
 
-      const intersectingComponents = this.getIntersectingComponents(
+      const intersectingLayers = this.getIntersectingLayers(
         selectedRowIndex,
         selectedColumnIndex,
         rowIndex,
         columnIndex
       );
 
-      if (intersectingComponents.length > 0) {
+      if (intersectingLayers.length > 0) {
         this.incrementCurrentComboCounter();
 
-        this.filterIntersectingComponents(
+        this.filterIntersectingLayers(
           selectedRowIndex,
           selectedColumnIndex,
-          intersectingComponents
+          intersectingLayers
         );
-        this.filterIntersectingComponents(
+        this.filterIntersectingLayers(
           rowIndex,
           columnIndex,
-          intersectingComponents
+          intersectingLayers
         );
 
         if (this.tileSet[rowIndex][columnIndex].length === 0) {
@@ -117,21 +117,21 @@ export default class TilesStore {
     return Math.max(...this.comboCounts, this.currentComboCounter);
   }
 
-  filterIntersectingComponents = (
+  filterIntersectingLayers = (
     rowIndex: number,
     columnIndex: number,
-    intersectingComponents: string[]
+    intersectingLayers: string[]
   ): void => {
     if (this.tileSet !== undefined) {
       this.tileSet[rowIndex][columnIndex] = this.tileSet[rowIndex][
         columnIndex
       ].filter(
-        (component: LayerData) => !intersectingComponents.includes(component.id)
+        (layer: LayerData) => !intersectingLayers.includes(layer.id)
       );
     }
   };
 
-  getIntersectingComponents = (
+  getIntersectingLayers = (
     firstRowIndex: number,
     firstColumnIndex: number,
     secondRowIndex: number,
@@ -139,17 +139,17 @@ export default class TilesStore {
   ): string[] => {
     if (this.tileSet !== undefined) {
       let firstTile = new Array(...this.tileSet[firstRowIndex][firstColumnIndex]);
-      const firstTileComponentIds = firstTile.map(
-        (component: LayerData) => component.id
+      const firstTileLayerIds = firstTile.map(
+        (layer: LayerData) => layer.id
       );
 
       let secondTile = new Array(...this.tileSet[secondRowIndex][secondColumnIndex]);
-      const secondTileComponentIds = secondTile.map(
-        (component: LayerData) => component.id
+      const secondTileLayerIds = secondTile.map(
+        (layer: LayerData) => layer.id
       );
 
-      return firstTileComponentIds.filter((id: string) =>
-        secondTileComponentIds.includes(id)
+      return firstTileLayerIds.filter((id: string) =>
+        secondTileLayerIds.includes(id)
       );
     }
 
