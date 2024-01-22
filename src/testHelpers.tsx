@@ -9,6 +9,7 @@ import { Theme } from './types/Theme';
 import { TileData } from './types/TileData';
 import { TileRowData } from './types/TileRowData';
 import { TileSetData } from './types/TileSetData';
+import nock from 'nock';
 
 export const renderWithMockProvider = (
   childen: ReactNode,
@@ -55,16 +56,60 @@ export const mockTheme = {
   layerGroups: [],
 };
 
+type MockTileStore = {
+  generateTileSetStub: sinon.SinonStub;
+  getThemeStub: sinon.SinonStub;
+  tilesStore: TilesStore;
+};
+
+export const defaultMockTileSet = mockTileSetData([
+  [
+    ['a', 'b'],
+    ['a', 'b'],
+  ],
+  [
+    ['a', 'b'],
+    ['a', 'b'],
+  ],
+]);
+
 export const mockTilesStore = async (
-  tileSet: TileSetData = mockTileSetData([]),
-  theme: Theme = mockTheme
-): Promise<TilesStore> => {
+  tileSet: TileSetData = defaultMockTileSet,
+  theme: Theme = mockTheme,
+  themeName: string = 'test'
+): Promise<MockTileStore> => {
   const generateTileSetStub = sinon.stub(api, 'generateTileSet');
   generateTileSetStub.resolves(tileSet);
   const getThemeStub = sinon.stub(api, 'getTheme');
   getThemeStub.resolves(theme);
-  const tilesStore = new TilesStore();
+  const tilesStore = new TilesStore(themeName);
   await Promise.all(generateTileSetStub.returnValues);
   await Promise.all(getThemeStub.returnValues);
-  return tilesStore;
+  return {
+    generateTileSetStub,
+    getThemeStub,
+    tilesStore,
+  };
+};
+
+export const mockGetThemeSuccess = (theme: string, expectedResponse: Theme) => {
+  return nock('http://127.0.0.1:8000')
+    .get(`/theme/${theme}`)
+    .reply(200, expectedResponse);
+};
+
+export const mockGetThemeFailure = () => {
+  return nock('http://127.0.0.1:8000').get('/theme/test').reply(422);
+};
+
+export const mockGenerateTileSetSuccess = (expectedResponse: TileSetData) => {
+  return nock('http://127.0.0.1:8000')
+    .get('/theme/test/generate?rowSize=5&columnSize=6')
+    .reply(200, expectedResponse);
+};
+
+export const mockGenerateTileSetFailure = () => {
+  return nock('http://127.0.0.1:8000')
+    .get('/theme/test/generate?rowSize=5&columnSize=6')
+    .reply(422);
 };

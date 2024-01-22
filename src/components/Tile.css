@@ -10,3 +10,66 @@
 img {
   position: absolute;
 }
+
+@keyframes popup {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 0;
+    transform: scale(0.25, 0.25);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1, 1);
+  }
+  90% {
+    opacity: 1;
+    transform: scale(1, 1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.25, 0.25);
+  }
+}
+
+@keyframes quick-popup {
+  0% {
+    opacity: 0;
+  }
+  12% {
+    opacity: 0;
+    transform: scale(0.25, 0.25);
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1, 1);
+  }
+  90% {
+    opacity: 1;
+    transform: scale(1, 1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.25, 0.25);
+  }
+}
+
+.chip {
+  font-weight: bold;
+  animation-name: popup;
+  animation-duration: 1750ms;
+  border-radius: 3vmin;
+  z-index: 10; /* Needs to be suffienctly large to be over every single layer */
+  padding: 5% 15%;
+  filter: invert(100%);
+}
+
+.go-anywhere {
+  font-size: 1.5vmin;
+}
+
+.no-matches {
+  animation-name: quick-popup;
+  font-size: 1.5vmin;
+}
