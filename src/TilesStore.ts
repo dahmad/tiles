@@ -1,13 +1,11 @@
 import { action, computed, makeAutoObservable, observable } from 'mobx';
 import { CSSProperties } from 'react';
 import { generateTileSet, getTheme } from './api';
+import { DEFAULT_APP_BACKGROUND_COLOR, DEFAULT_FONT_COLOR, DEFAULT_PRIMARY_BACKGROUND_COLOR, DEFAULT_SECONDARY_BACKGROUND_COLOR, DEFAULT_SELECTED_TILE_INSET_COLOR, GO_ANYWHERE, NO_MATCHES } from './constants';
+import { Coordinates } from './types/Coordinates';
 import { LayerData } from './types/LayerData';
 import { Theme } from './types/Theme';
 import { TileSetData } from './types/TileSetData';
-import { Coordinates } from './types/Coordinates';
-
-const NO_MATCHES = 'no matches';
-const GO_ANYWHERE = 'go anywhere';
 
 export default class TilesStore {
   // counter
@@ -236,9 +234,6 @@ export default class TilesStore {
 
   // computed getters
   @computed get appStyle(): CSSProperties {
-    const DEFAULT_APP_BACKGROUND_COLOR = 'white';
-    const DEFAULT_FONT_COLOR = 'black';
-
     let backgroundColor: string;
     let color: string;
 
@@ -290,7 +285,7 @@ export default class TilesStore {
 
     return (
       this.tileSet[this.secondTile[0]][this.secondTile[1]].length -
-        this.intersectingLayerIds.length ===
+      this.intersectingLayerIds.length ===
       0
     );
   }
@@ -306,10 +301,6 @@ export default class TilesStore {
   };
 
   getTileStyle(rowIndex: number, columnIndex: number): CSSProperties {
-    const DEFAULT_PRIMARY_BACKGROUND_COLOR = 'white';
-    const DEFAULT_SECONDARY_BACKGROUND_COLOR = '#dddddd';
-    const DEFAULT_SELECTED_TILE_INSET_COLOR = 'black';
-
     let backgroundColor: string;
     let selectedTileInsetColor: string;
 
