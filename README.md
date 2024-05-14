@@ -14,15 +14,15 @@ https://www.dropbox.com/scl/fi/0s02l5j7lm3vo2xifr02c/tiles_demo.mov?raw=1&rlkey=
 
 4
 
-<video src="https://www.dropbox.com/scl/fi/0s02l5j7lm3vo2xifr02c/tiles_demo.mov"/>
+<video src="https://www.dropbox.com/scl/fi/0s02l5j7lm3vo2xifr02c/tiles_demo.mov"></video>
 
 5
 
-<video src="https://www.dropbox.com/scl/fi/0s02l5j7lm3vo2xifr02c/tiles_demo.mov?rlkey=48cm5orvj948ej5301dcjac4w&st=xry4py5a&dl=0"/>
+<video src="https://www.dropbox.com/scl/fi/0s02l5j7lm3vo2xifr02c/tiles_demo.mov?rlkey=48cm5orvj948ej5301dcjac4w&st=xry4py5a&dl=0"></video>
 
 6
 
-<video src="https://www.dropbox.com/scl/fi/0s02l5j7lm3vo2xifr02c/tiles_demo.mov?raw=1&rlkey=48cm5orvj948ej5301dcjac4w&st=xry4py5a&dl=0"/>
+<video src="https://www.dropbox.com/scl/fi/0s02l5j7lm3vo2xifr02c/tiles_demo.mov?raw=1&rlkey=48cm5orvj948ej5301dcjac4w&st=xry4py5a&dl=0"></video>
 
 
 ## Running the application
