@@ -4,6 +4,14 @@ A recreation of the New York Times game, Tiles
 
 https://www.dropbox.com/scl/fi/0s02l5j7lm3vo2xifr02c/tiles_demo.mov
 
+2 
+
+https://www.dropbox.com/scl/fi/0s02l5j7lm3vo2xifr02c/tiles_demo.mov?rlkey=48cm5orvj948ej5301dcjac4w&st=xry4py5a&dl=0
+
+3
+
+https://www.dropbox.com/scl/fi/0s02l5j7lm3vo2xifr02c/tiles_demo.mov?raw=1&rlkey=48cm5orvj948ej5301dcjac4w&st=xry4py5a&dl=0
+
 ## Running the application
 
 In one terminal window:
