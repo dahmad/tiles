@@ -2,6 +2,8 @@
 
 A recreation of the New York Times game, Tiles
 
+https://github.com/dahmad/tiles/assets/25067093/d26c31ca-fed3-46ab-8496-9300119ff269
+
 ## Running the application
 
 In one terminal window:
