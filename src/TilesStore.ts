@@ -4,8 +4,8 @@ import { generateTileSet, getTheme } from './api';
 import { LayerData } from './types/LayerData';
 import { Theme } from './types/Theme';
 import { TileSetData } from './types/TileSetData';
+import { Coordinates } from './types/Coordinates';
 
-type Coordinates = [number, number] | undefined;
 const NO_MATCHES = 'no matches';
 const GO_ANYWHERE = 'go anywhere';
 
