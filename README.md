@@ -2,7 +2,7 @@
 
 A recreation of the New York Times game, Tiles
 
-<video src="https://www.dropbox.com/scl/fi/0s02l5j7lm3vo2xifr02c/tiles_demo.mov?rlkey=48cm5orvj948ej5301dcjac4w&st=xry4py5a&dl=0"><video>
+https://www.dropbox.com/scl/fi/0s02l5j7lm3vo2xifr02c/tiles_demo.mov
 
 ## Running the application
 
